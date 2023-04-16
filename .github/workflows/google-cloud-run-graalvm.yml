@@ -3,8 +3,9 @@ on: [push, pull_request]
 
 env:
   GCLOUD_PROJECT_ID: ${{ secrets.GCLOUD_PROJECT_ID }}
-  GCLOUD_REGION: europe-west3
-  GCLOUD_GCR: eu.gcr.io
+  BUILDLESS_APIKEY: ${{ secrets.BUILDLESS_APIKEY }}
+  GRADLE_CACHE_REMOTE: true
+  GRADLE_CACHE_PUSH: true
 
 jobs:
   build:
