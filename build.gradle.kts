@@ -11,8 +11,11 @@ plugins {
 version = "0.1"
 group = "io.github.sgammon"
 
-val kotlinVersion=project.properties.get("kotlinVersion")
+val kotlinVersion: String by properties
+val elideVersion: String by properties
+
 repositories {
+    maven("https://elide-snapshots.storage-download.googleapis.com/repository/v3/")
     mavenCentral()
 }
 
@@ -21,6 +24,9 @@ dependencies {
     kapt("io.micronaut:micronaut-http-validation")
     kapt("io.micronaut.openapi:micronaut-openapi")
     kapt("io.micronaut.serde:micronaut-serde-processor")
+    implementation("dev.elide:base:$elideVersion")
+    implementation("dev.elide:core:$elideVersion")
+    implementation("dev.elide:server:$elideVersion")
     implementation("com.theokanning.openai-gpt3-java:api:0.12.0")
     implementation("com.theokanning.openai-gpt3-java:service:0.12.0")
     implementation("io.micronaut:micronaut-http-client")
@@ -31,8 +37,8 @@ dependencies {
     implementation("io.micronaut.sql:micronaut-jdbc-hikari")
     implementation("io.swagger.core.v3:swagger-annotations")
     implementation("jakarta.annotation:jakarta.annotation-api")
-    implementation("org.jetbrains.kotlin:kotlin-reflect:${kotlinVersion}")
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:${kotlinVersion}")
+    implementation("org.jetbrains.kotlin:kotlin-reflect:$kotlinVersion")
+    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion")
     implementation("mysql:mysql-connector-java")
     runtimeOnly("ch.qos.logback:logback-classic")
     compileOnly("org.graalvm.nativeimage:svm")
