@@ -1,4 +1,8 @@
-## planetscale ai
+# planetscale ai
+
+[![Elide](https://elide.dev/shield)](https://elide.dev)
+[![GraalVM](https://img.shields.io/badge/GraalVM-22.3.x-blue.svg?logo=oracle)](https://www.graalvm.org/)
+[![Kotlin](https://img.shields.io/badge/Kotlin-1.8.20-blue.svg?logo=kotlin)](http://kotlinlang.org)
 
 it's a plugin for openAI that allows you to access your PlanetScale database. you can ask it stuff about your DB, or ask
 it for optimization opportunities. we are working on making it dispatchable from github as well.
