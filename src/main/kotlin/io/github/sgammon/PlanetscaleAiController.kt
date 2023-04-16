@@ -130,6 +130,7 @@ open class PlanetscaleAiController {
     @Serdeable data class TableSchemaResponse(
         val name: String,
         val columns: List<ColumnSchema>,
+        val primaryKey: String? = null,
     )
 
     /** Response indicating a query translation error occurred. */
@@ -177,8 +178,7 @@ open class PlanetscaleAiController {
     }
 
     /**
-     * Given a [databaseName] and [tableName], return the schema for the table from
-     * the user's Planetscale database.
+     * Given a [databaseName] and [tableName], return the schema for the table from the user's Planetscale database.
      *
      * @param databaseName Name of the database.
      * @param tableName Name of the table schema to fetch.
@@ -189,6 +189,17 @@ open class PlanetscaleAiController {
         @QueryValue("databaseName") databaseName: String,
         @QueryValue("tableName") tableName: String,
     ): HttpResponse<TableSchemaResponse> {
+        // fetch the primary key for the table
+        val primaryKey = connection.createStatement().use { statement ->
+            statement.executeQuery("SHOW KEYS FROM $tableName WHERE Key_name = 'PRIMARY'").use { resultSet ->
+                if (resultSet.next()) {
+                    resultSet.getString("Column_name")
+                } else {
+                    null
+                }
+            }
+        }
+
         // obtain a connection to the current database, and use it to introspect the schema
         // at the table named `tableName`. use the introspected schema to build an object of
         // type `TableSchemaResponse`.
@@ -198,9 +209,15 @@ open class PlanetscaleAiController {
                 while (resultSet.next()) {
                     val name = resultSet.getString("Field")
                     val type = ColumnType.fromMySqlType(resultSet.getString("Type"))
-                    columns.add(ColumnSchema(name, type))
+                    columns.add(ColumnSchema(
+                        name,
+                        type,))
                 }
-                TableSchemaResponse(tableName, columns)
+                TableSchemaResponse(
+                    tableName,
+                    columns,
+                    primaryKey,
+                )
             }
         })
     }
