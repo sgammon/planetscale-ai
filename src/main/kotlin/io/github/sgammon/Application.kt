@@ -3,12 +3,19 @@ package io.github.sgammon
 import io.micronaut.runtime.Micronaut.run
 import io.swagger.v3.oas.annotations.*
 import io.swagger.v3.oas.annotations.info.*
+import io.swagger.v3.oas.annotations.servers.Server
 
 @OpenAPIDefinition(
     info = Info(
-            title = "planetscale-ai",
-            version = "0.0"
-    )
+            title = "Planetscale AI Agent API",
+            version = "1.0"
+    ),
+    servers = [
+        Server(
+            url = "https://plugin-l3xhpgfr4a-uw.a.run.app",
+            description = "Server endpoint",
+        )
+    ],
 )
 object Api {
 }
