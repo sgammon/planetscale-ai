@@ -25,12 +25,18 @@ jobs:
           graalvm-version: 22.3.0.java17
       - name: Install Native Image
         run: gu install native-image
-      - name: Setup Google Cloud CLI
-        uses: google-github-actions/setup-gcloud@v0.2.1
+      - id: "auth"
+        name: "Setup: Authorize Service Account"
+        uses: "google-github-actions/auth@v1"
         with:
-          version: '290.0.1'
-          service_account_key: ${{ secrets.GCLOUD_SA_KEY }}
-          project_id: ${{ secrets.GCLOUD_PROJECT_ID }}
+          credentials_json: "${{ secrets.BUILDBOT_SERVICE_ACCOUNT }}"
+          create_credentials_file: true
+          export_environment_variables: true
+          cleanup_credentials: true
+      - name: 'Set up Cloud SDK'
+        uses: 'google-github-actions/setup-gcloud@v1'
+        with:
+          version: '>= 363.0.0'
       - name: Docker Login
         run: |
           gcloud auth configure-docker
