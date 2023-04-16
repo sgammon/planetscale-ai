@@ -27,7 +27,6 @@ dependencies {
     kapt("io.micronaut.serde:micronaut-serde-processor")
     implementation("dev.elide:base:$elideVersion")
     implementation("dev.elide:core:$elideVersion")
-    implementation("dev.elide:server:$elideVersion")
     implementation("org.graalvm.sdk:graal-sdk:$graalvmVersion")
     implementation("com.theokanning.openai-gpt3-java:api:0.12.0")
     implementation("com.theokanning.openai-gpt3-java:service:0.12.0")
