@@ -1,0 +1,8 @@
+[
+  {
+    "interfaces":["com.theokanning.openai.OpenAiApi"]
+  },
+  {
+    "interfaces":["java.sql.Connection"]
+  }
+]
