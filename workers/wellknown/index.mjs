@@ -9,7 +9,7 @@ const descriptor = {
     },
     "api": {
         "type": "openapi",
-        "url": "https://planetscale-ai-api.elide.dev/openapi.json",
+        "url": "https://planetscale.ai/openapi.json",
         "is_user_authenticated": false
     },
     "logo_url": "https://assets.planetscale-ai-api.elide.dev/assets/planetscale-logo.jpg",

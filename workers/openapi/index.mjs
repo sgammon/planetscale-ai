@@ -7,7 +7,7 @@ const descriptor = {
     },
     "servers": [
         {
-            "url": "https://planetscale-ai-api.elide.dev",
+            "url": "https://planetscale.ai",
             "description": "Server endpoint"
         }
     ],

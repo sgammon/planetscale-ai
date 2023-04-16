@@ -12,7 +12,7 @@ import io.swagger.v3.oas.annotations.servers.Server
     ),
     servers = [
         Server(
-            url = "https://planetscale-ai-api.elide.dev",
+            url = "https://planetscale.ai",
             description = "Server endpoint",
         )
     ],
