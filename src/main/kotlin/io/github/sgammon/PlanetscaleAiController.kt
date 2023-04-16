@@ -22,8 +22,29 @@ import javax.transaction.Transactional
 @Controller("/planetscaleAi")
 open class PlanetscaleAiController {
     companion object {
+        // Database name to connect to at Planetscale.
         const val sandboxDbName = "planetscale-ai-sample-1"
+
+        // AI model to use via OpenAI when translating natural language to queries.
         const val aiModelToUse = "text-davinci-003"
+
+        // IMDB table names.
+        val imdbTables = listOf(
+            "Alias_attributes",
+            "Alias_types",
+            "Aliases",
+            "Directors",
+            "Episode_belongs_to",
+            "Had_role",
+            "Known_for",
+            "Name_worked_as",
+            "Names_",
+            "Principals",
+            "Title_genres",
+            "Title_ratings",
+            "Titles",
+            "Writers",
+        )
     }
 
     // Logger.
@@ -87,7 +108,7 @@ open class PlanetscaleAiController {
     ): ListTableNamesResponse? {
         return ListTableNamesResponse(
             databaseName = databaseName,
-            tableNames = listOf("categories", "products"),
+            tableNames = listOf("categories", "products").plus(imdbTables).sorted(),
         )
     }
 
@@ -141,19 +162,15 @@ open class PlanetscaleAiController {
 
         // generate the prompt
         val prompt = """
-### Turn this natural language prompt into a SQL query
-#
-# We are generating MySQL SQL dialect queries. You should only generate read-only queries.
-#
-# The user may have specified a database name, or not. The user may use colloquial names for their tables, so make sure
-# to use the table list below to look for names (unless they use an exact name matching a table, in which case, use that
-# name).
-#
-# Please generate a full query, do not return partial results. The available tables in the database are as follows:
-#
-${planetscaleTableNamesList(databaseName ?: databases.first())?.tableNames?.joinToString("\n") {  "# - $it" } ?: error("Failed to resolve table names")}
-#
-$naturalLanguage
+            ### Turn this natural language prompt into a SQL query
+            #
+            # We are generating MySQL SQL dialect queries. You should only generate read-only queries.
+            #
+            # The user may have specified a database name, or not. The user may use colloquial names for their tables, so make sure
+            # to use the table list below to look for names (unless they use an exact name matching a table, in which case, use that
+            # name).
+            #
+            $naturalLanguage
         """.trimIndent()
 
         logging.info("Rendered prompt:\n\n$prompt")
