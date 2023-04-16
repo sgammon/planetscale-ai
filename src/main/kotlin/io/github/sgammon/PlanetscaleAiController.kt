@@ -105,13 +105,7 @@ open class PlanetscaleAiController {
     @Operation(
         summary = "Accepts a natural language prompt, translates the prompt to an SQL query, and runs the query; returns the results.",
         description = """
-            Accepts a natural language prompt, translates the prompt to an SQL query, and
-            runs the query against the user's database in read-only form; then, returns the
-            results to the calling user for summarization.
-
-            If only one database is available in the user's account, the query is run against that database.
-            If more than one database is available, the user must specify the database name to query, using
-            the `databaseName` parameter.
+            Accepts a natural language prompt, translates it to an SQL query, and runs the query against the user's database in read-only form; then, returns the results to the calling user for summarization.
         """,
         responses = [
             ApiResponse(
