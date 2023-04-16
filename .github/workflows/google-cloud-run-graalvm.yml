@@ -51,10 +51,9 @@ jobs:
         run: |
           DOCKER_IMAGE_REPOSITORY=$(docker images --format "{{.Repository}}" | grep planetscale-ai)
           DOCKER_IMAGE=$(docker images --format "{{.Repository}}:{{.Tag}}" "${DOCKER_IMAGE_REPOSITORY}" )
-
-          gcloud run deploy planetscale-ai --quiet \
+          gcloud run deploy plugin --quiet \
             --image "${DOCKER_IMAGE}" --project "${GCLOUD_PROJECT_ID}" \
-            --region "${GCLOUD_REGION}" --platform managed --allow-unauthenticated --format json
+            --region us-west1 --platform managed --allow-unauthenticated --format json
           echo "Invoke endpoint:"
           gcloud run services list --platform managed --format json | jq -r \
             '.[] | select(.metadata.name == "google-cloud-run-maven-test") | .status.address.url'
