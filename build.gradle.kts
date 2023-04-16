@@ -22,7 +22,6 @@ dependencies {
     kapt("io.micronaut.openapi:micronaut-openapi")
     kapt("io.micronaut.serde:micronaut-serde-processor")
     implementation("com.theokanning.openai-gpt3-java:api:0.12.0")
-    implementation("com.theokanning.openai-gpt3-java:client:0.12.0")
     implementation("com.theokanning.openai-gpt3-java:service:0.12.0")
     implementation("io.micronaut:micronaut-http-client")
     implementation("io.micronaut:micronaut-jackson-databind")
