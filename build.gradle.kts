@@ -13,6 +13,7 @@ group = "io.github.sgammon"
 
 val kotlinVersion: String by properties
 val elideVersion: String by properties
+val graalvmVersion: String by properties
 
 repositories {
     maven("https://elide-snapshots.storage-download.googleapis.com/repository/v3/")
@@ -27,6 +28,7 @@ dependencies {
     implementation("dev.elide:base:$elideVersion")
     implementation("dev.elide:core:$elideVersion")
     implementation("dev.elide:server:$elideVersion")
+    implementation("org.graalvm.sdk:graal-sdk:$graalvmVersion")
     implementation("com.theokanning.openai-gpt3-java:api:0.12.0")
     implementation("com.theokanning.openai-gpt3-java:service:0.12.0")
     implementation("io.micronaut:micronaut-http-client")
