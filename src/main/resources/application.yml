@@ -15,7 +15,7 @@ datasources:
     db-type: mysql
     schema-generate: CREATE_DROP
     dialect: MYSQL
-    url: "jdbc:mysql://aws.connect.psdb.cloud/planetscale-ai-sample-1?sslMode=VERIFY_IDENTITY"
+    url: "jdbc:mysql://aws.connect.psdb.cloud/employees?sslMode=VERIFY_IDENTITY"
     username: "w7brxwmn32d29thozhu9"
     password: "pscale_pw_GQ8umEaHNbXLIQp9o3PlNW7OymzMIfZ3bjQlfTbuLYV"
 netty:

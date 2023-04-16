@@ -22,9 +22,6 @@ import javax.transaction.Transactional
 @Controller("/planetscaleAi")
 open class PlanetscaleAiController {
     companion object {
-        // Database name to connect to at Planetscale.
-        private const val sandboxDbName = "planetscale-ai-sample-1"
-
         // Sample database containing company data.
         private const val sampleCompanyDbName = "employees"
 
@@ -142,7 +139,6 @@ open class PlanetscaleAiController {
     @Get(uri="/listOfDatabasesByName", produces=[MediaType.APPLICATION_JSON])
     open fun planetscaleDatabaseNamesList(): ListDatabaseNamesResponse? {
         return ListDatabaseNamesResponse(listOf(
-            sandboxDbName,
             sampleCompanyDbName,
         ))
     }
