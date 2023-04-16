@@ -46,7 +46,7 @@ jobs:
           TESTCONTAINERS_RYUK_DISABLED: true
         run: |
           export DOCKER_IMAGE=`echo "${GCLOUD_GCR}/${GCLOUD_PROJECT_ID}/${GCLOUD_IMAGE_REPOSITORY}/planetscale-ai" | sed -e 's#//#/#' -e 's#^/##'`
-          ./gradlew check dockerPushNative --no-daemon
+          ./gradlew check jib --no-daemon
       - name: Deploy Cloud Run
         run: |
           DOCKER_IMAGE_REPOSITORY=$(docker images --format "{{.Repository}}" | grep planetscale-ai)
