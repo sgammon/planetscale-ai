@@ -79,6 +79,59 @@ open class PlanetscaleAiController {
         val columns: List<String>? = null,
     )
 
+    /** Enumeration which lists each type that a column can inhabit in MySQL. */
+    @Serdeable enum class ColumnType {
+        /** String or text column. */
+        STRING,
+
+        /** Numeric column. */
+        NUMBER,
+
+        /** Boolean column. */
+        BOOLEAN,
+
+        /** Date column. */
+        DATE,
+
+        /** Datetime column. */
+        DATETIME,
+
+        /** Timestamp column. */
+        TIMESTAMP;
+
+        companion object {
+            /** @return Cleaned up simple type name from a MySQL column definition. */
+            private fun cleanupTypeName(name: String): String {
+                // remove any parentheses and parameters (e.g. `varchar(255)` -> `varchar`)
+                val parenIndex = name.indexOf('(')
+                return if (parenIndex == -1) name else name.substring(0, parenIndex)
+            }
+
+            /** @return [ColumnType] for the [typeName] of a MySQL column type. */
+            internal fun fromMySqlType(typeName: String) = when (cleanupTypeName(typeName)) {
+                "varchar", "char", "text", "mediumtext", "longtext" -> STRING
+                "int", "tinyint", "smallint", "mediumint", "bigint", "float", "double", "decimal" -> NUMBER
+                "boolean", "bit" -> BOOLEAN
+                "date" -> DATE
+                "datetime" -> DATETIME
+                "timestamp" -> TIMESTAMP
+                else -> error("Unknown column type: $typeName")
+            }
+        }
+    }
+
+    /** Describes the structure/schema of a single table column. */
+    @Serdeable data class ColumnSchema(
+        val name: String,
+        val type: ColumnType,
+    )
+
+    /** Structure which describes a table schema. */
+    @Serdeable data class TableSchemaResponse(
+        val name: String,
+        val columns: List<ColumnSchema>,
+    )
+
     /** Response indicating a query translation error occurred. */
     @Serdeable data class FailedToTranslateQueryError(
         val errorText: String,
@@ -95,6 +148,11 @@ open class PlanetscaleAiController {
         val errorText: String,
     )
 
+    /**
+     * List the user's databases in Planetscale.
+     *
+     * @reteurn List of database names (see [ListDatabaseNamesResponse]).
+     */
     @Get(uri="/listOfDatabasesByName", produces=[MediaType.APPLICATION_JSON])
     open fun planetscaleDatabaseNamesList(): ListDatabaseNamesResponse? {
         return ListDatabaseNamesResponse(
@@ -102,6 +160,12 @@ open class PlanetscaleAiController {
         )
     }
 
+    /**
+     *  List tables at the database named [databaseName] in Planetscale.
+     *
+     * @param databaseName Name of the database to list tables in.
+     * @return List of table names (see [ListTableNamesResponse]).
+     */
     @Get(uri="/listTablesForDatabaseByName", produces=[MediaType.APPLICATION_JSON])
     open fun planetscaleTableNamesList(
         @QueryValue("databaseName") databaseName: String,
@@ -110,6 +174,35 @@ open class PlanetscaleAiController {
             databaseName = databaseName,
             tableNames = listOf("categories", "products").plus(imdbTables).sorted(),
         )
+    }
+
+    /**
+     * Given a [databaseName] and [tableName], return the schema for the table from
+     * the user's Planetscale database.
+     *
+     * @param databaseName Name of the database.
+     * @param tableName Name of the table schema to fetch.
+     * @return HTTP response containing JSON which describes the table.
+     */
+    @Get(uri="/tableSchemaByName", produces=[MediaType.APPLICATION_JSON])
+    open fun planetscaleTableSchemaByName(
+        @QueryValue("databaseName") databaseName: String,
+        @QueryValue("tableName") tableName: String,
+    ): HttpResponse<TableSchemaResponse> {
+        // obtain a connection to the current database, and use it to introspect the schema
+        // at the table named `tableName`. use the introspected schema to build an object of
+        // type `TableSchemaResponse`.
+        return HttpResponse.ok(connection.createStatement().use { statement ->
+            statement.executeQuery("DESCRIBE $tableName").use { resultSet ->
+                val columns = mutableListOf<ColumnSchema>()
+                while (resultSet.next()) {
+                    val name = resultSet.getString("Field")
+                    val type = ColumnType.fromMySqlType(resultSet.getString("Type"))
+                    columns.add(ColumnSchema(name, type))
+                }
+                TableSchemaResponse(tableName, columns)
+            }
+        })
     }
 
     /**

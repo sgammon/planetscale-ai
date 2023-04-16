@@ -14,6 +14,8 @@ const descriptor = {
     "paths": {
         "/planetscaleAi/listOfDatabasesByName": {
             "get": {
+                "summary": "List the user's databases in Planetscale.",
+                "description": "List the user's databases in Planetscale.",
                 "operationId": "planetscaleDatabaseNamesList",
                 "responses": {
                     "200": {
@@ -31,11 +33,14 @@ const descriptor = {
         },
         "/planetscaleAi/listTablesForDatabaseByName": {
             "get": {
+                "summary": "List tables at the database named \\[databaseName\\] in Planetscale.",
+                "description": "List tables at the database named \\[databaseName\\] in Planetscale.",
                 "operationId": "planetscaleTableNamesList",
                 "parameters": [
                     {
                         "name": "databaseName",
                         "in": "query",
+                        "description": "Name of the database to list tables in.",
                         "required": true,
                         "schema": {
                             "type": "string"
@@ -44,7 +49,7 @@ const descriptor = {
                 ],
                 "responses": {
                     "200": {
-                        "description": "planetscaleTableNamesList 200 response",
+                        "description": "List of table names (see \\[ListTableNamesResponse\\]).",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -94,10 +99,77 @@ const descriptor = {
                     }
                 }
             }
+        },
+        "/planetscaleAi/tableSchemaByName": {
+            "get": {
+                "summary": "Given a \\[databaseName\\] and \\[tableName\\], return the schema for the table from the user's Planetscale database.",
+                "description": "Given a \\[databaseName\\] and \\[tableName\\], return the schema for the table from the user's Planetscale database.",
+                "operationId": "planetscaleTableSchemaByName",
+                "parameters": [
+                    {
+                        "name": "databaseName",
+                        "in": "query",
+                        "description": "Name of the database.",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "tableName",
+                        "in": "query",
+                        "description": "Name of the table schema to fetch.",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "HTTP response containing JSON which describes the table.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PlanetscaleAiController.TableSchemaResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
     },
     "components": {
         "schemas": {
+            "PlanetscaleAiController.ColumnSchema": {
+                "required": [
+                    "name",
+                    "type"
+                ],
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "type": {
+                        "$ref": "#/components/schemas/PlanetscaleAiController.ColumnType"
+                    }
+                },
+                "description": "Describes the structure/schema of a single table column."
+            },
+            "PlanetscaleAiController.ColumnType": {
+                "type": "string",
+                "description": "Enumeration which lists each type that a column can inhabit in MySQL.",
+                "enum": [
+                    "STRING",
+                    "NUMBER",
+                    "BOOLEAN",
+                    "DATE",
+                    "DATETIME",
+                    "TIMESTAMP"
+                ]
+            },
             "PlanetscaleAiController.ListDatabaseNamesResponse": {
                 "required": [
                     "databaseNames"
@@ -158,6 +230,25 @@ const descriptor = {
                     }
                 },
                 "description": "Response to a natural language SQL query."
+            },
+            "PlanetscaleAiController.TableSchemaResponse": {
+                "required": [
+                    "columns",
+                    "name"
+                ],
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "columns": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/PlanetscaleAiController.ColumnSchema"
+                        }
+                    }
+                },
+                "description": "Structure which describes a table schema."
             }
         }
     }
