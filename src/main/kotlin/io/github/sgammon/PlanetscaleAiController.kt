@@ -264,7 +264,7 @@ open class PlanetscaleAiController {
 
         // if there is more than one database, fail
         when {
-            databases.size > 1 -> return HttpResponse.badRequest(DisambiguationError(
+            (databaseName.isNullOrBlank() && databases.isEmpty()) -> return HttpResponse.badRequest(DisambiguationError(
                 neededInput = "databaseName",
                 errorText = "Please specify a database name",
             ))
@@ -306,7 +306,7 @@ $naturalLanguage
             .stop(listOf("#", ";"))
             .prompt(prompt)
             .temperature(0.1)
-            .maxTokens(4_000)
+            .maxTokens(3_000)
             .build())
 
         val rawQuery = result.choices.first().text
