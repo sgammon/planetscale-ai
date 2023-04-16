@@ -23,13 +23,16 @@ import javax.transaction.Transactional
 open class PlanetscaleAiController {
     companion object {
         // Database name to connect to at Planetscale.
-        const val sandboxDbName = "planetscale-ai-sample-1"
+        private const val sandboxDbName = "planetscale-ai-sample-1"
+
+        // Sample database containing company data.
+        private const val sampleCompanyDbName = "employees"
 
         // AI model to use via OpenAI when translating natural language to queries.
-        const val aiModelToUse = "text-davinci-003"
+        private const val aiModelToUse = "text-davinci-003"
 
         // IMDB table names.
-        val imdbTables = listOf(
+        private val imdbTables = listOf(
             "Alias_attributes",
             "Alias_types",
             "Aliases",
@@ -156,9 +159,10 @@ open class PlanetscaleAiController {
      */
     @Get(uri="/listOfDatabasesByName", produces=[MediaType.APPLICATION_JSON])
     open fun planetscaleDatabaseNamesList(): ListDatabaseNamesResponse? {
-        return ListDatabaseNamesResponse(
-            listOf(sandboxDbName),
-        )
+        return ListDatabaseNamesResponse(listOf(
+            sandboxDbName,
+            sampleCompanyDbName,
+        ))
     }
 
     /**
