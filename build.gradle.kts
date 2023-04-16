@@ -5,6 +5,7 @@ plugins {
     id("com.github.johnrengelman.shadow") version "7.1.2"
     id("io.micronaut.application") version "3.7.8"
     id("io.micronaut.test-resources") version "3.7.8"
+    id("com.google.cloud.tools.jib") version "2.8.0"
 }
 
 version = "0.1"
@@ -63,11 +64,11 @@ tasks {
         }
     }
     dockerBuild {
-//        images = ["${System.env.DOCKER_IMAGE ?: project.name}:$project.version"]
+        images.add("us-docker.pkg.dev/planetscale-ai/plugin/jvm:latest")
     }
 
     dockerBuildNative {
-//        images = ["${System.env.DOCKER_IMAGE ?: project.name}:$project.version"]
+        images.add("us-docker.pkg.dev/planetscale-ai/plugin/native:latest")
     }
 }
 graalvmNative.toolchainDetection.set(false)
@@ -81,4 +82,13 @@ micronaut {
 }
 
 
-
+tasks {
+  jib {
+    from {
+      image = "us-docker.pkg.dev/elide-fw/tools/jdk19:latest"
+    }
+    to {
+      image = "us-docker.pkg.dev/planetscale-ai/plugin/jvm:latest"
+    }
+  }
+}
