@@ -306,7 +306,7 @@ $naturalLanguage
             .stop(listOf("#", ";"))
             .prompt(prompt)
             .temperature(0.1)
-            .maxTokens(1_000)
+            .maxTokens(4_000)
             .build())
 
         val rawQuery = result.choices.first().text
