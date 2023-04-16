@@ -9,12 +9,12 @@ const descriptor = {
     },
     "api": {
         "type": "openapi",
-        "url": "https://elide.dev/planetscale-ai/openapi.json",
+        "url": "https://planetscale-ai-api.elide.dev/openapi.json",
         "is_user_authenticated": false
     },
-    "logo_url": "https://dbagent.io/static/logo.png",
-    "contact_email": "support@dbagent.io",
-    "legal_info_url": "https://dbagent.io/legal"
+    "logo_url": "https://assets.planetscale-ai-api.elide.dev/assets/planetscale-logo.jpg",
+    "contact_email": "support@elide.cloud",
+    "legal_info_url": "https://less.build/legal"
 };
 
 export default {
