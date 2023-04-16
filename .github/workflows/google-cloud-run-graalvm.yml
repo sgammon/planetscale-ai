@@ -39,7 +39,7 @@ jobs:
           version: '>= 363.0.0'
       - name: Docker Login
         run: |
-          gcloud auth configure-docker
+          gcloud auth configure-docker us-docker.pkg.dev
       - name: Build And Push Docker Image
         env:
           GCLOUD_IMAGE_REPOSITORY: ${{ secrets.GCLOUD_IMAGE_REPOSITORY }}
@@ -49,6 +49,7 @@ jobs:
           ./gradlew check jib --no-daemon
       - name: Deploy Cloud Run
         run: |
+          docker pull us-docker.pkg.dev/planetscale-ai/plugin/jvm:latest
           DOCKER_IMAGE_REPOSITORY=$(docker images --format "{{.Repository}}" | grep planetscale-ai)
           DOCKER_IMAGE=$(docker images --format "{{.Repository}}:{{.Tag}}" "${DOCKER_IMAGE_REPOSITORY}" )
           gcloud run deploy plugin --quiet \
