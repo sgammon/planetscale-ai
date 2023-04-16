@@ -29,7 +29,7 @@ jobs:
         name: "Setup: Authorize Service Account"
         uses: "google-github-actions/auth@v1"
         with:
-          credentials_json: "${{ secrets.BUILDBOT_SERVICE_ACCOUNT }}"
+          credentials_json: "${{ secrets.GOOGLE_SERVICE_KEY }}"
           create_credentials_file: true
           export_environment_variables: true
           cleanup_credentials: true
