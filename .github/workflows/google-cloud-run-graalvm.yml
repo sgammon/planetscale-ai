@@ -48,15 +48,6 @@ jobs:
         run: |
           export DOCKER_IMAGE=`echo "${GCLOUD_GCR}/${GCLOUD_PROJECT_ID}/${GCLOUD_IMAGE_REPOSITORY}/planetscale-ai" | sed -e 's#//#/#' -e 's#^/##'`
           ./gradlew jib --no-daemon
-      - name: Build and Push Native Image
-        continue-on-error: true
-        env:
-          GCLOUD_IMAGE_REPOSITORY: ${{ secrets.GCLOUD_IMAGE_REPOSITORY }}
-          TESTCONTAINERS_RYUK_DISABLED: true
-        run: |
-          export DOCKER_IMAGE=`echo "${GCLOUD_GCR}/${GCLOUD_PROJECT_ID}/${GCLOUD_IMAGE_REPOSITORY}/planetscale-ai" | sed -e 's#//#/#' -e 's#^/##'`
-          ./gradlew dockerBuildNative --no-daemon
-          docker push us-docker.pkg.dev/planetscale-ai/plugin/native:latest
       - name: Deploy Cloud Run
         run: |
           docker pull us-docker.pkg.dev/planetscale-ai/plugin/jvm:latest
