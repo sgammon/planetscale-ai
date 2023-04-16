@@ -1,0 +1,21 @@
+micronaut:
+  application:
+    name: planetscaleAi
+  router:
+    static-resources:
+      swagger:
+        paths: classpath:META-INF/swagger
+        mapping: /swagger/**
+      swagger-ui:
+        paths: classpath:META-INF/swagger/views/swagger-ui
+        mapping: /swagger-ui/**
+datasources:
+  default:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    db-type: mysql
+    schema-generate: CREATE_DROP
+    dialect: MYSQL
+netty:
+  default:
+    allocator:
+      max-order: 3
