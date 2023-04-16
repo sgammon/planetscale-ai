@@ -16,8 +16,8 @@ datasources:
     schema-generate: CREATE_DROP
     dialect: MYSQL
     url: "jdbc:mysql://aws.connect.psdb.cloud/employees?sslMode=VERIFY_IDENTITY"
-    username: "w7brxwmn32d29thozhu9"
-    password: "pscale_pw_GQ8umEaHNbXLIQp9o3PlNW7OymzMIfZ3bjQlfTbuLYV"
+    username: "jdtnq1bnrpqssati3q8s"
+    password: "pscale_pw_fHujeYS7GADLiHD3Kf0MbL33jqcba84pY0xRwKPiZAS"
 netty:
   default:
     allocator:
