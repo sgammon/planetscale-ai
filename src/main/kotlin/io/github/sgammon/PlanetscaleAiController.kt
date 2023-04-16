@@ -30,24 +30,6 @@ open class PlanetscaleAiController {
 
         // AI model to use via OpenAI when translating natural language to queries.
         private const val aiModelToUse = "text-davinci-003"
-
-        // IMDB table names.
-        private val imdbTables = listOf(
-            "Alias_attributes",
-            "Alias_types",
-            "Aliases",
-            "Directors",
-            "Episode_belongs_to",
-            "Had_role",
-            "Known_for",
-            "Name_worked_as",
-            "Names_",
-            "Principals",
-            "Title_genres",
-            "Title_ratings",
-            "Titles",
-            "Writers",
-        )
     }
 
     // Logger.
@@ -175,9 +157,20 @@ open class PlanetscaleAiController {
     open fun planetscaleTableNamesList(
         @QueryValue("databaseName") databaseName: String,
     ): ListTableNamesResponse? {
+        // fetch all table names for the provided database name, and prepare them in a list of strings.
+        val tableNames = connection.createStatement().use { statement ->
+            statement.executeQuery("SHOW TABLES").use { resultSet ->
+                val tableNames = mutableListOf<String>()
+                while (resultSet.next()) {
+                    tableNames.add(resultSet.getString(1))
+                }
+                tableNames
+            }
+        }
+
         return ListTableNamesResponse(
             databaseName = databaseName,
-            tableNames = listOf("categories", "products").plus(imdbTables).sorted(),
+            tableNames = tableNames,
         )
     }
 
