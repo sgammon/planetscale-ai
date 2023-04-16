@@ -270,17 +270,28 @@ open class PlanetscaleAiController {
             ))
         }
 
+        // extract db name
+        val dbname = databaseName ?: databases.first()
+
         // generate the prompt
         val prompt = """
-            ### Turn this natural language prompt into a SQL query
-            #
-            # We are generating MySQL SQL dialect queries. You should only generate read-only queries.
-            #
-            # The user may have specified a database name, or not. The user may use colloquial names for their tables, so make sure
-            # to use the table list below to look for names (unless they use an exact name matching a table, in which case, use that
-            # name).
-            #
-            $naturalLanguage
+### Turn this natural language prompt into a SQL query
+#
+# We are generating MySQL SQL dialect queries. You should only generate read-only queries.
+#
+# The user may have specified a database name, or not. The user may use colloquial names for their tables, so make sure
+# to use the table list below to look for names (unless they use an exact name matching a table, in which case, use that
+# name).
+#
+# Make sure to only use tables that actually exist in the database. Here is the list of active tables. Also
+# keep in mind that the user may use colloquial names from their columns, so make sure to only reference
+# columns which exist. If a table exists with different capitalization than an input, it's safe to just
+# assume that is the table the user is talking about.
+#
+# Tables in the database:
+${planetscaleTableNamesList(dbname)?.tableNames?.joinToString("\n") { "# - $it" } ?: error("No available tables")}
+#
+$naturalLanguage
         """.trimIndent()
 
         logging.info("Rendered prompt:\n\n$prompt")
@@ -290,13 +301,15 @@ open class PlanetscaleAiController {
             .model(aiModelToUse)
             .stop(listOf("#", ";"))
             .prompt(prompt)
-            .temperature(0.0)
+            .temperature(0.1)
             .maxTokens(1_000)
             .build())
 
-        val query = result.choices.first().text
+        val rawQuery = result.choices.first().text
 
         // static query
+        val sanitized = rawQuery.trim().replace("\n", "")
+        val query = if (sanitized.startsWith("?")) sanitized.drop(1).trim() else sanitized
         logging.info("Executing query: '$query'")
         val statement = connection.createStatement()
         val err = statement.execute(query)
