@@ -13,6 +13,11 @@ select the planetscale plugin in the openAI interface, and then write and submit
 which then dispatches OpenAI to generate a query from your natural language input. that query is then submitted to your
 planetscale db, the results are interpreted, and returned to your convo.
 
+when prompted for a domain for plugin discovery, enter:
+```
+planetscale.ai
+```
+
 ### is it done yet
 
 yes
