@@ -1,3 +1,27 @@
+@file:Suppress("UnstableApiUsage")
+
+plugins {
+    id("com.gradle.enterprise") version("3.11.3")
+}
+
+gradleEnterprise {
+    buildScan {
+        termsOfServiceUrl = "https://gradle.com/terms-of-service"
+        termsOfServiceAgree = "yes"
+    }
+}
+
+dependencyResolutionManagement {
+    repositoriesMode.set(
+        RepositoriesMode.PREFER_PROJECT
+    )
+    repositories {
+        maven("https://maven.pkg.st/")
+        maven("https://elide.pkg.st/")
+        maven("https://repository.hazelcast.com/release/")
+    }
+}
+
 
 rootProject.name="planetscale-ai"
 
