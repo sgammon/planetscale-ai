@@ -43,6 +43,7 @@ if you want to play with a native image, try:
 - [Elide](https://elide.dev)
 - [Buildless](https://less.build)
 - [PlanetScale](https://planetscale.com)
+- [CloudFlare Workers](https://workers.cloudflare.com/)
 - [Micronaut](https://micronaut.io)
 - [Kotlin](https://kotlinlang.org)
 - [Gradle](https://gradle.org)
