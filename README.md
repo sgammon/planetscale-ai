@@ -20,3 +20,25 @@ yes
 ### is there a blog post about it
 
 [you bet](https://cacheflow.blog)
+
+### how do i build it/contribute?
+
+you can build the codebase like any regular Gradle Kotlin project, with:
+```
+./gradlew build
+```
+
+if you want to play with a native image, try:
+```
+./gradlew nativeCompile
+```
+
+### what is it built with?
+
+- [Elide](https://elide.dev)
+- [Buildless](https://less.build)
+- [PlanetScale](https://planetscale.com)
+- [Micronaut](https://micronaut.io)
+- [Kotlin](https://kotlinlang.org)
+- [Gradle](https://gradle.org)
+- [GraalVM](https://graalvm.org)
