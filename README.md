@@ -16,3 +16,7 @@ planetscale db, the results are interpreted, and returned to your convo.
 ### is it done yet
 
 yes
+
+### is there a blog post about it
+
+[you bet](https://cacheflow.blog)
