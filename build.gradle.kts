@@ -1,18 +1,24 @@
+@file:Suppress(
+    "DSL_SCOPE_VIOLATION",
+)
+
 import com.github.gradle.node.npm.task.NpmTask
 import io.micronaut.gradle.MicronautRuntime
 import io.micronaut.gradle.MicronautTestRuntime
 import org.jetbrains.kotlin.gradle.dsl.KotlinJvmOptions
 
 plugins {
-    id("org.jetbrains.kotlin.jvm") version "1.8.20"
-    id("org.jetbrains.kotlin.kapt") version "1.8.20"
-    id("org.jetbrains.kotlin.plugin.allopen") version "1.8.20"
-    id("com.github.johnrengelman.shadow") version "7.1.2"
-    id("io.micronaut.application") version "3.7.8"
-    id("io.micronaut.test-resources") version "3.7.8"
-    id("com.google.cloud.tools.jib") version "2.8.0"
-    id("com.github.node-gradle.node") version "3.5.1"
-    id("com.github.ben-manes.versions") version "0.46.0"
+    alias(libs.plugins.jib)
+    alias(libs.plugins.node)
+    alias(libs.plugins.versions)
+    alias(libs.plugins.micronaut.application)
+    alias(libs.plugins.micronaut.aot)
+    alias(libs.plugins.micronaut.testResources)
+
+    // use kotlin helper
+    kotlin("jvm") version libs.versions.kotlin.get()
+    kotlin("kapt") version libs.versions.kotlin.get()
+    kotlin("plugin.allopen") version libs.versions.kotlin.get()
 }
 
 version = "0.1"
@@ -25,38 +31,50 @@ val workers = listOf(
 
 val kotlinVersion: String by properties
 val kotlinLanguageVersion: String by properties
+val micronautVersion: String by properties
+val nodeVersion: String by properties
 val javaLanguageVersion: String by properties
 val elideVersion: String by properties
 val graalvmVersion: String by properties
 val jvmImageCoordinates: String by properties
 val nativeImageCoordinates: String by properties
+val dockerBaseJvm: String by properties
+val dockerBaseNative: String by properties
 
 dependencies {
-    kapt("io.micronaut.data:micronaut-data-processor")
-    kapt("io.micronaut:micronaut-http-validation")
-    kapt("io.micronaut.openapi:micronaut-openapi")
-    kapt("io.micronaut.serde:micronaut-serde-processor")
-    implementation("dev.elide:elide-base:$elideVersion")
-    implementation("dev.elide:elide-core:$elideVersion")
-    implementation("dev.elide:elide-server:$elideVersion")
-    implementation("org.graalvm.sdk:graal-sdk:$graalvmVersion")
-    implementation("com.theokanning.openai-gpt3-java:api:0.12.0")
-    implementation("com.theokanning.openai-gpt3-java:service:0.12.0")
-    implementation("io.micronaut:micronaut-http-client")
-    implementation("io.micronaut:micronaut-jackson-databind")
-    implementation("io.micronaut.data:micronaut-data-jdbc")
-    implementation("io.micronaut.kotlin:micronaut-kotlin-runtime")
-    implementation("io.micronaut.serde:micronaut-serde-jackson")
-    implementation("io.micronaut.sql:micronaut-jdbc-hikari")
-    implementation("io.swagger.core.v3:swagger-annotations")
-    implementation("jakarta.annotation:jakarta.annotation-api")
-    implementation("org.jetbrains.kotlin:kotlin-reflect:$kotlinVersion")
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion")
-    implementation("io.micronaut:micronaut-validation")
-    implementation("mysql:mysql-connector-java")
-    runtimeOnly("ch.qos.logback:logback-classic")
-    compileOnly("org.graalvm.nativeimage:svm")
-    runtimeOnly("com.fasterxml.jackson.module:jackson-module-kotlin")
+    // Annotation Processors
+    kapt(mn.micronaut.data.processor)
+    kapt(mn.micronaut.http.validation)
+    kapt(mn.micronaut.openapi)
+    kapt(mn.micronaut.serde.processor)
+
+    // Elide
+    implementation(framework.elide.server)
+
+    // Open AI API
+    implementation(libs.bundles.openai)
+
+    // Micronaut
+    implementation(mn.micronaut.jackson.databind)
+    implementation(mn.micronaut.data.jdbc)
+    implementation(mn.micronaut.kotlin.runtime)
+    implementation(mn.micronaut.kotlin.extension.functions)
+    implementation(mn.micronaut.serde.jackson)
+    implementation(mn.micronaut.jdbc.hikari)
+    implementation(mn.swagger.annotations)
+    implementation(mn.micronaut.validation)
+    implementation(mn.mysql.connector.java)
+
+    // Kotlin
+    implementation(kotlin("reflect"))
+    implementation(kotlin("stdlib-jdk8"))
+
+    // Logback
+    runtimeOnly(mn.logback.core)
+    runtimeOnly(mn.jackson.module.kotlin)
+
+    // GraalVM
+    compileOnly(libs.bundles.graalvm)
 }
 
 /**
@@ -74,15 +92,32 @@ java {
 
 node {
     download.set(false)
-    version.set("18.11.0")
+    version.set(nodeVersion)
 }
 
 micronaut {
+    version(micronautVersion)
     runtime(MicronautRuntime.NETTY)
     testRuntime(MicronautTestRuntime.KOTEST_4)
     processing {
         incremental(true)
         annotations("io.github.sgammon.*")
+    }
+    aot {
+        configFile.set(file("$rootDir/gradle/aot-native.properties"))
+        targetEnvironments.addAll("cloud", "live")
+        replaceLogbackXml.set(false)
+        optimizeServiceLoading.set(true)
+        convertYamlToJava.set(true)
+        precomputeOperations.set(true)
+        cacheEnvironment.set(false)  // env is overidden in prod with secret values
+        optimizeClassLoading.set(true)
+        deduceEnvironment.set(true)
+        optimizeNetty.set(true)
+
+        netty {
+            enabled.set(true)
+        }
     }
 }
 
@@ -116,11 +151,35 @@ tasks {
         }
     }
 
+    dockerfile {
+        from(dockerBaseJvm)
+    }
+
+    optimizedDockerfile {
+        from(dockerBaseJvm)
+    }
+
+    dockerfileNative {
+        from(dockerBaseNative)
+    }
+
+    optimizedDockerfileNative {
+        from(dockerBaseNative)
+    }
+
     dockerBuild {
         images.add(jvmImageCoordinates)
     }
 
+    optimizedDockerBuild {
+        images.add(jvmImageCoordinates)
+    }
+
     dockerBuildNative {
+        images.add(nativeImageCoordinates)
+    }
+
+    optimizedDockerBuildNative {
         images.add(nativeImageCoordinates)
     }
 }
@@ -129,10 +188,10 @@ graalvmNative.toolchainDetection.set(false)
 
 jib {
     from {
-        image = "us-docker.pkg.dev/elide-fw/tools/jdk19:latest"
+        image = dockerBaseJvm
     }
     to {
-        image = "us-docker.pkg.dev/planetscale-ai/plugin/jvm:latest"
+        image = jvmImageCoordinates
     }
 }
 

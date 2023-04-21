@@ -1,17 +1,27 @@
 [versions]
 kotlin = "1.8.20"
-plugin_shadow = "7.1.2"
+graalvm = "22.3.2"
+openai = "0.12.0"
+micronaut_aot = "1.1.2"
 plugin_micronaut = "3.7.8"
-plugin_jib = "2.8.0"
-plugin_node = "3.5.1"
+plugin_jib = "3.3.1"
+plugin_node = "3.6.0"
 plugin_versions = "0.46.0"
 
 [plugins]
-shadow = { id = "com.github.johnrengelman.shadow", version.ref = "plugin_shadow" }
 micronaut_application = { id = "io.micronaut.application", version.ref = "plugin_micronaut" }
+micronaut_testResources = { id = "io.micronaut.test-resources", version.ref = "plugin_micronaut" }
+micronaut_aot = { id = "io.micronaut.aot", version.ref = "plugin_micronaut" }
 jib = { id = "com.google.cloud.tools.jib", version.ref = "plugin_jib" }
-node = { id = "com.moowork.node", version.ref = "plugin_node" }
+node = { id = "com.github.node-gradle.node", version.ref = "plugin_node" }
 versions = { id = "com.github.ben-manes.versions", version.ref = "plugin_versions" }
 
 [libraries]
+graalvm_sdk = { group = "org.graalvm.sdk", name = "graal-sdk", version.ref = "graalvm" }
+graalvm_svm = { group = "org.graalvm.nativeimage", name = "svm", version.ref = "graalvm" }
+openai_api = { group = "com.theokanning.openai-gpt3-java", name = "api", version.ref = "openai" }
+openai_service = { group = "com.theokanning.openai-gpt3-java", name = "service", version.ref = "openai" }
+
 [bundles]
+openai = [ "openai_api", "openai_service" ]
+graalvm = [ "graalvm_sdk", "graalvm_svm" ]
