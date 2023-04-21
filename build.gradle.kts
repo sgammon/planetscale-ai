@@ -101,7 +101,7 @@ java {
 }
 
 kotlin {
-    // Nothing at this time.
+    jvmToolchain(19)
 }
 
 kover {
