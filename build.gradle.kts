@@ -15,6 +15,7 @@ plugins {
     alias(libs.plugins.kover)
     alias(libs.plugins.ktlint)
     alias(libs.plugins.detekt)
+    alias(libs.plugins.sonar)
     alias(libs.plugins.micronaut.application)
     alias(libs.plugins.micronaut.aot)
     alias(libs.plugins.micronaut.testResources)
@@ -162,6 +163,15 @@ detekt {
     config.from("$rootDir/.github/detekt.yml")
 }
 
+sonar {
+    properties {
+        property(
+            "sonar.coverage.jacoco.xmlReportPaths",
+            listOf("$buildDir/reports/kover/xml/report.xml")
+        )
+    }
+}
+
 /**
  * Build: Server
  */
@@ -289,9 +299,9 @@ val publishWorkerLiveTask = tasks.register<NpmTask>("publishWorkersLive") {
  * Top-level Tasks
  */
 
-val detectCheck = tasks.named("detekt")
-val ktlintCheck = tasks.named("ktlintCheck")
-val ktlintFormat = tasks.named("ktlintFormat")
+val detectCheck: TaskProvider<Task> = tasks.named("detekt")
+val ktlintCheck: TaskProvider<Task> = tasks.named("ktlintCheck")
+val ktlintFormat: TaskProvider<Task> = tasks.named("ktlintFormat")
 
 tasks.build {
     dependsOn(
@@ -324,7 +334,7 @@ listOf("buildLayers").forEach {
  * Publish/Deploy Tasks
  */
 
-val jibtask = tasks.named("jib")
+val jibtask: TaskProvider<Task> = tasks.named("jib")
 
 tasks.create("publishStaging") {
     group = "publish"

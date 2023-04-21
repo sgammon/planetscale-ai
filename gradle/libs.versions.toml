@@ -11,6 +11,7 @@ plugin_node = "3.6.0"
 plugin_versions = "0.46.0"
 plugin_ktlint = "11.3.1"
 plugin_kover = "0.7.0-Alpha"
+plugin_sonar = "4.0.0.2929"
 
 [plugins]
 micronaut_application = { id = "io.micronaut.application", version.ref = "plugin_micronaut" }
@@ -22,6 +23,7 @@ versions = { id = "com.github.ben-manes.versions", version.ref = "plugin_version
 ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "plugin_ktlint" }
 detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
 kover = { id = "org.jetbrains.kotlinx.kover", version.ref = "plugin_kover" }
+sonar = { id = "org.sonarqube", version.ref = "plugin_sonar" }
 
 [libraries]
 graalvm_sdk = { group = "org.graalvm.sdk", name = "graal-sdk", version.ref = "graalvm" }

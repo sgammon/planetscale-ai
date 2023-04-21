@@ -1,4 +1,4 @@
-name: "CodeQL"
+name: "CI: CodeQL"
 
 env:
   BUILDLESS_APIKEY: ${{ secrets.BUILDLESS_APIKEY }}
