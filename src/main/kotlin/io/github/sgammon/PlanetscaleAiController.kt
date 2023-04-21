@@ -33,6 +33,12 @@ open class PlanetscaleAiController {
 
         // AI model to use via OpenAI when translating natural language to queries.
         private const val aiModelToUse = "text-davinci-003"
+
+        // Default temperature value to use with Open AI completions.
+        private const val defaultTemperature = 0.1
+
+        // Default maximum amount of tokens to use during completion (keep in mind the inputs count against this limit).
+        private const val defaultMaxTokens = 3_000
     }
 
     // Logger.
@@ -240,10 +246,14 @@ open class PlanetscaleAiController {
      */
     @Get(uri = "/naturalLanguageSQLQuery", produces = [MediaType.APPLICATION_JSON])
     @Operation(
-        summary = "Accepts a natural language prompt, translates the prompt to an SQL query, and runs the query; returns the results.",
-        description = """
-            Accepts a natural language prompt, translates it to an SQL query, and runs the query against the user's database in read-only form; then, returns the results to the calling user for summarization.
-        """,
+        summary = (
+            "Accepts a natural language prompt, translates the prompt to an SQL query, " +
+                "and runs the query; returns the results."
+            ),
+        description = (
+            "Accepts a natural language prompt, translates it to an SQL query, and runs the query against the " +
+                "user's database in read-only form; then, returns the results to the calling user for summarization."
+            ),
         responses = [
             ApiResponse(
                 responseCode = "200",
@@ -312,8 +322,8 @@ $naturalLanguage
                 .model(aiModelToUse)
                 .stop(listOf("#", ";"))
                 .prompt(prompt)
-                .temperature(0.1)
-                .maxTokens(3_000)
+                .temperature(defaultTemperature)
+                .maxTokens(defaultMaxTokens)
                 .build(),
         )
 
