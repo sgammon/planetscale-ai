@@ -23,7 +23,7 @@ val micronautVersion: String by settings
 
 dependencyResolutionManagement {
     repositoriesMode.set(
-        RepositoriesMode.PREFER_SETTINGS
+        RepositoriesMode.PREFER_SETTINGS,
     )
     repositories {
         maven("https://maven.pkg.st/")

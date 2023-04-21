@@ -1,5 +1,5 @@
 @file:Suppress(
-    "DSL_SCOPE_VIOLATION"
+    "DSL_SCOPE_VIOLATION",
 )
 
 import com.github.gradle.node.npm.task.NpmTask
@@ -12,6 +12,7 @@ plugins {
     alias(libs.plugins.node)
     alias(libs.plugins.versions)
     alias(libs.plugins.ktlint)
+    alias(libs.plugins.detekt)
     alias(libs.plugins.micronaut.application)
     alias(libs.plugins.micronaut.aot)
     alias(libs.plugins.micronaut.testResources)
@@ -27,7 +28,7 @@ group = "io.github.sgammon"
 
 val workers = listOf(
     "openapi",
-    "wellknown"
+    "wellknown",
 )
 
 val kotlinVersion: String by properties
@@ -109,6 +110,7 @@ micronaut {
         annotations("io.github.sgammon.*")
     }
     aot {
+        version.set(libs.versions.micronaut.aot.get())
         configFile.set(file("$rootDir/gradle/aot-native.properties"))
         targetEnvironments.addAll("cloud", "live")
         replaceLogbackXml.set(false)
@@ -138,7 +140,13 @@ graalvmNative {
  */
 
 ktlint {
-    disabledRules.set(setOf("no-wildcard-imports"))
+    version.set(libs.versions.ktlint.get())
+}
+
+detekt {
+    toolVersion = libs.versions.detekt.get()
+    parallel = true
+    config.from("$rootDir/.github/detekt.yml")
 }
 
 /**
@@ -224,6 +232,20 @@ fun NpmTask.workerOutputs() {
     }
 }
 
+val prettierCheck = tasks.register<NpmTask>("checkPrettier") {
+    group = "check"
+    description = "Check JS/TS code style with Prettier"
+    args.set(listOf("run", "lint"))
+    projectInputsOutputs()
+}
+
+val prettierFormat = tasks.register<NpmTask>("formatPrettier") {
+    group = "format"
+    description = "Format JS/TS code style with Prettier"
+    args.set(listOf("run", "format"))
+    projectInputsOutputs()
+}
+
 val buildWorkersTask = tasks.register<NpmTask>("buildJs") {
     group = "build"
     description = "Build JS targets via Node/NPM"
@@ -249,8 +271,20 @@ val publishWorkerLiveTask = tasks.register<NpmTask>("publishWorkersLive") {
     workerOutputs()
 }
 
+/**
+ * Top-level Tasks
+ */
+
 tasks.build {
     dependsOn(buildWorkersTask)
+}
+
+tasks.check {
+    dependsOn(prettierCheck)
+}
+
+tasks.create("format") {
+    dependsOn(prettierFormat)
 }
 
 /**
@@ -263,7 +297,7 @@ tasks.create("publishStaging") {
     group = "publish"
     description = "Publish or deploy all live targets"
     dependsOn(
-        publishWorkerStagingTask
+        publishWorkerStagingTask,
     )
 }
 
@@ -272,6 +306,6 @@ tasks.create("publish") {
     description = "Publish or deploy all live targets"
     dependsOn(
         publishWorkerLiveTask,
-        jibtask
+        jibtask,
     )
 }

@@ -4,6 +4,8 @@
   "description": "PlanetScale plugin for ChatGPT",
   "main": "index.js",
   "scripts": {
+    "lint": "prettier --check .",
+    "format": "prettier --write .",
     "build": "npm run build:workers",
     "build:workers": "npm run build --workspaces",
     "test": "npm run test:workers",
