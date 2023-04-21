@@ -165,10 +165,14 @@ detekt {
 
 sonar {
     properties {
-        property(
-            "sonar.coverage.jacoco.xmlReportPaths",
-            listOf("$buildDir/reports/kover/xml/report.xml"),
-        )
+        listOf(
+            "sonar.coverage.jacoco.xmlReportPaths" to listOf("$buildDir/reports/kover/xml/report.xml"),
+            "sonar.projectKey" to "sgammon_planetscale-ai",
+            "sonar.organization" to "sam-g",
+            "sonar.host.url" to "https://sonarcloud.io",
+        ).forEach {
+            property(it.first, it.second)
+        }
     }
 }
 
