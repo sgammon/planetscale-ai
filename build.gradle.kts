@@ -102,7 +102,7 @@ val buildWorkersTask = tasks.register<NpmTask>("buildJs") {
     args.set(listOf("run", "build"))
     dependsOn(tasks.npmInstall)
     inputs.dir("node_modules")
-    inputs.files("tsconfig.json")
+    inputs.files("tsconfig.json", "package.json")
     workers.forEach { workerName ->
         inputs.dir(project.fileTree("workers/$workerName").exclude("**/*.spec.ts"))
         outputs.dir("workers/$workerName/build/worker")
@@ -116,8 +116,7 @@ val publishWorkerStagingTask = tasks.register<NpmTask>("publishWorkersStaging") 
     dependsOn(tasks.npmInstall, buildWorkersTask)
     inputs.dir(project.fileTree("workers").exclude("**/*.spec.ts"))
     inputs.dir("node_modules")
-    inputs.dir("package.json")
-    inputs.files("tsconfig.json")
+    inputs.files("tsconfig.json", "package.json")
     workers.forEach { workerName ->
         inputs.dir("workers/$workerName/build/worker")
     }
@@ -129,8 +128,7 @@ val publishWorkerLiveTask = tasks.register<NpmTask>("publishWorkersLive") {
     args.set(listOf("run", "publish:live"))
     dependsOn(tasks.npmInstall, buildWorkersTask)
     inputs.dir("node_modules")
-    inputs.dir("package.json")
-    inputs.files("tsconfig.json")
+    inputs.files("tsconfig.json", "package.json")
     workers.forEach { workerName ->
         inputs.dir("workers/$workerName/build/worker")
     }
