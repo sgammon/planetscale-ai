@@ -1,4 +1,4 @@
-name: Google Cloud Run GraalVM CE CD
+name: "CI: Server"
 on: [push, pull_request]
 
 env:
@@ -23,7 +23,7 @@ jobs:
       - name: Setup GraalVM CE
         uses: DeLaGuardo/setup-graalvm@3.1
         with:
-          graalvm-version: 22.3.0.java17
+          graalvm-version: 22.3.0.java19
       - name: Install Native Image
         run: gu install native-image
       - id: "auth"
@@ -53,6 +53,7 @@ jobs:
       - name: Execute Gradle build
         run: ./gradlew jib --no-daemon --scan
       - name: Deploy Cloud Run
+        if: github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/')
         run: |
           docker pull us-docker.pkg.dev/planetscale-ai/plugin/jvm:latest
           DOCKER_IMAGE_REPOSITORY=$(docker images --format "{{.Repository}}" | grep planetscale-ai)
