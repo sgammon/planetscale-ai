@@ -79,7 +79,8 @@ dependencies {
     runtimeOnly(mn.jackson.module.kotlin)
 
     // GraalVM
-    compileOnly(libs.bundles.graalvm)
+    implementation(libs.graalvm.sdk)
+    compileOnly(libs.graalvm.svm)
 }
 
 /**
