@@ -156,6 +156,7 @@ detekt {
 fun KotlinJvmOptions.kotlincConfig() {
     languageVersion = kotlinLanguageVersion
     jvmTarget = javaLanguageVersion
+    allWarningsAsErrors = true
 }
 
 tasks {
