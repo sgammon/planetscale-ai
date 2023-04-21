@@ -22,7 +22,7 @@ env:
 
 jobs:
   validation:
-    name: "Wrapper Check"
+    name: "Check: Wrapper"
     runs-on: ubuntu-latest
     steps:
       - name: "Setup: Checkout"
@@ -31,7 +31,7 @@ jobs:
         uses: gradle/wrapper-validation-action@v1
 
   check-deps:
-    name: "Dependency Review"
+    name: "Check: Dependencies"
     runs-on: ubuntu-latest
     steps:
       - name: "Setup: Checkout"
