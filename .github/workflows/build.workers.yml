@@ -16,6 +16,11 @@ env:
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+      id-token: write
     steps:
       - name: "Setup: Checkout"
         uses: actions/checkout@v3
