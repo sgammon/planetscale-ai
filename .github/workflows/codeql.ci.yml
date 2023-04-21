@@ -1,5 +1,11 @@
 name: "CodeQL"
 
+env:
+  BUILDLESS_APIKEY: ${{ secrets.BUILDLESS_APIKEY }}
+  GRADLE_CACHE_LOCAL: true
+  GRADLE_CACHE_REMOTE: true
+  GRADLE_CACHE_PUSH: true
+
 on:
   push:
     branches: ["main"]
