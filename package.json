@@ -20,6 +20,9 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@commitlint/cli": "^17.6.1",
+    "@commitlint/config-conventional": "^17.6.1",
+    "husky": "^8.0.3",
     "prettier": "2.8.7",
     "wrangler": "2.16.0"
   }
