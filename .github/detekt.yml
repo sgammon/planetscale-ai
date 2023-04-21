@@ -31,8 +31,9 @@ console-reports:
 output-reports:
   active: true
   exclude:
-    - "XmlOutputReport"
-    - "SarifOutputReport"
+    - "TxtOutputReport"
+    - "HtmlOutputReport"
+    - "MdOutputReport"
 
 comments:
   active: true

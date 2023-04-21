@@ -23,11 +23,11 @@ jobs:
         language: ["javascript", "java"]
 
     steps:
-      - name: Checkout repository
+      - name: "Setup: Checkout"
         uses: actions/checkout@v3
-      - name: Initialize CodeQL
+      - name: "Setup: Initialize CodeQL"
         uses: github/codeql-action/init@v2
         with:
           config-file: ./.github/codeql/codeql-config.yml
-      - name: Perform CodeQL Analysis
+      - name: "Analyze: CodeQL"
         uses: github/codeql-action/analyze@v2
