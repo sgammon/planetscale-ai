@@ -7,8 +7,8 @@
   "module": "index.mjs",
   "main": "index.mjs",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "build": ""
+    "test": "echo \"No test specified for JS\"",
+    "build": "echo \"Would build CloudFlare Worker 'wellknown'\""
   },
   "dependencies": {
     "typescript": "^5.0.4"

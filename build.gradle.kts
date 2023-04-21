@@ -95,8 +95,10 @@ micronaut {
     }
 }
 
-val buildWorkersTask = tasks.register<NpmTask>("build:workers") {
-    args.set(listOf("run", "--prod"))
+val buildWorkersTask = tasks.register<NpmTask>("buildJs") {
+    group = "build"
+    description = "Build JS targets via Node/NPM"
+    args.set(listOf("run", "build"))
     dependsOn(tasks.npmInstall)
     inputs.dir(project.fileTree("workers").exclude("**/*.spec.ts"))
     inputs.dir("node_modules")
@@ -112,6 +114,10 @@ tasks {
     to {
       image = "us-docker.pkg.dev/planetscale-ai/plugin/jvm:latest"
     }
+  }
+
+  build {
+    dependsOn(buildWorkersTask)
   }
 }
 

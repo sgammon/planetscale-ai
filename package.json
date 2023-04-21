@@ -4,8 +4,10 @@
   "description": "PlanetScale plugin for ChatGPT",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "build:workers": ""
+    "build": "npm run build:workers",
+    "build:workers": "npm run build --workspaces",
+    "test": "npm run test:workers",
+    "test:workers": "npm run build --workspaces"
   },
   "workspaces": [
     "workers/*"
