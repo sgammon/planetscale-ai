@@ -276,16 +276,29 @@ val publishWorkerLiveTask = tasks.register<NpmTask>("publishWorkersLive") {
  * Top-level Tasks
  */
 
+val detectCheck = tasks.named("detekt")
+val ktlintCheck = tasks.named("ktlintCheck")
+val ktlintFormat = tasks.named("ktlintFormat")
+
 tasks.build {
-    dependsOn(buildWorkersTask)
+    dependsOn(
+        buildWorkersTask,
+    )
 }
 
 tasks.check {
-    dependsOn(prettierCheck)
+    dependsOn(
+        detectCheck,
+        prettierCheck,
+        ktlintCheck,
+    )
 }
 
 tasks.create("format") {
-    dependsOn(prettierFormat)
+    dependsOn(
+        prettierFormat,
+        ktlintFormat,
+    )
 }
 
 /**
