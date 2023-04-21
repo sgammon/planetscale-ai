@@ -12,6 +12,8 @@ env:
   GCLOUD_PROJECT_ID: ${{ secrets.GCLOUD_PROJECT_ID }}
   BUILDLESS_APIKEY: ${{ secrets.BUILDLESS_APIKEY }}
   GCLOUD_IMAGE_REPOSITORY: ${{ secrets.GCLOUD_IMAGE_REPOSITORY }}
+  SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+  CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
   TESTCONTAINERS_RYUK_DISABLED: true
   GRADLE_CACHE_LOCAL: true
   GRADLE_CACHE_REMOTE: true
@@ -49,6 +51,8 @@ jobs:
     steps:
       - name: "Setup: Checkout"
         uses: actions/checkout@v3
+        with:
+          fetch-depth: '0'
       - name: "Setup: Cache"
         uses: actions/cache@v3
         with:
