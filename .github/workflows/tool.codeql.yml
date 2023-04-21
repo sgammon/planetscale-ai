@@ -31,7 +31,9 @@ jobs:
         with:
           config-file: ./.github/codeql/codeql-config.yml
           languages: javascript, java
-      - name: "Build: CodeQL Autobuild"
-        uses: github/codeql-action/autobuild@v2
+      - name: "Setup: Gradle"
+        uses: gradle/gradle-build-action@v2
+      - name: "Build: Plugin Server"
+        run: ./gradlew build -x test --info --no-daemon --scan
       - name: "Analyze: CodeQL"
         uses: github/codeql-action/analyze@v2
