@@ -95,6 +95,7 @@ jobs:
           export DOCKER_IMAGE=`echo "${GCLOUD_GCR}/${GCLOUD_PROJECT_ID}/${GCLOUD_IMAGE_REPOSITORY}/planetscale-ai" | sed -e 's#//#/#' -e 's#^/##'`
       - name: "Setup: CodeQL"
         uses: github/codeql-action/init@v2
+        continue-on-error: true
         with:
           config-file: ./.github/codeql/codeql-config.yml
           languages: javascript, java
