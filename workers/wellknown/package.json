@@ -10,7 +10,7 @@
     "test": "echo \"No test specified for JS\"",
     "build": "wrangler publish --env=staging --dry-run=true --outdir=./build/worker index.mjs",
     "publish:staging": "wrangler publish --env=staging --outdir=./build/worker index.mjs",
-    "publish:live": "wrangler publish --env=production --outdir=./build/worker index.mjs"
+    "publish:live": "wrangler publish --outdir=./build/worker index.mjs"
   },
   "dependencies": {
     "typescript": "^5.0.4"
