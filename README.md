@@ -14,6 +14,7 @@ which then dispatches OpenAI to generate a query from your natural language inpu
 PlanetScale DB, the results are interpreted, and returned to your convo in plain english.
 
 When prompted for a domain for plugin discovery, enter:
+
 ```
 planetscale.ai
 ```
@@ -29,11 +30,13 @@ Yes
 ### How do I build it/contribute?
 
 You can build the codebase like any regular Gradle Kotlin project, with:
+
 ```
 ./gradlew build
 ```
 
 If you want to play with a native image, try:
+
 ```
 ./gradlew nativeCompile
 ```
@@ -53,12 +56,14 @@ If you want to play with a native image, try:
 
 Everything. To get started, you can use:
 
-**Build all targets:
+\*\*Build all targets:
+
 ```
 ./gradlew build
 ```
 
 **Test all targets:**
+
 ```
 ./gradlew test
 ```
@@ -207,4 +212,5 @@ Yarn tasks
 yarn - Install node packages using Yarn.
 yarnSetup - Setup a specific version of Yarn to be used by the build.
 ```
+
 </details>

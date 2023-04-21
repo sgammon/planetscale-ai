@@ -34,10 +34,10 @@ jobs:
           create_credentials_file: true
           export_environment_variables: true
           cleanup_credentials: true
-      - name: 'Set up Cloud SDK'
-        uses: 'google-github-actions/setup-gcloud@v1'
+      - name: "Set up Cloud SDK"
+        uses: "google-github-actions/setup-gcloud@v1"
         with:
-          version: '>= 363.0.0'
+          version: ">= 363.0.0"
       - name: Docker Login
         run: |
           gcloud config set project planetscale-ai
