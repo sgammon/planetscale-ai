@@ -1,5 +1,12 @@
 @file:Suppress("UnstableApiUsage")
 
+pluginManagement {
+    repositories {
+        maven("https://gradle.pkg.st/")
+        gradlePluginPortal()
+    }
+}
+
 plugins {
     id("com.gradle.enterprise") version("3.11.3")
 }
@@ -18,12 +25,11 @@ dependencyResolutionManagement {
     repositories {
         maven("https://maven.pkg.st/")
         maven("https://elide.pkg.st/")
-        maven("https://repository.hazelcast.com/release/")
     }
 }
 
 
-rootProject.name="planetscale-ai"
+rootProject.name = "planetscale-ai"
 
 val enableLocalCache = (System.getenv("GRADLE_CACHE_LOCAL")?.toBoolean() ?: true)
 val enableRemoteCache = (System.getenv("GRADLE_CACHE_REMOTE")?.toBoolean() ?: true)

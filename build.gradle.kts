@@ -33,8 +33,9 @@ dependencies {
     kapt("io.micronaut:micronaut-http-validation")
     kapt("io.micronaut.openapi:micronaut-openapi")
     kapt("io.micronaut.serde:micronaut-serde-processor")
-    implementation("dev.elide:base:$elideVersion")
-    implementation("dev.elide:core:$elideVersion")
+    implementation("dev.elide:elide-base:$elideVersion")
+    implementation("dev.elide:elide-core:$elideVersion")
+    implementation("dev.elide:elide-server:$elideVersion")
     implementation("org.graalvm.sdk:graal-sdk:$graalvmVersion")
     implementation("com.theokanning.openai-gpt3-java:api:0.12.0")
     implementation("com.theokanning.openai-gpt3-java:service:0.12.0")
@@ -48,14 +49,11 @@ dependencies {
     implementation("jakarta.annotation:jakarta.annotation-api")
     implementation("org.jetbrains.kotlin:kotlin-reflect:$kotlinVersion")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion")
+    implementation("io.micronaut:micronaut-validation")
     implementation("mysql:mysql-connector-java")
     runtimeOnly("ch.qos.logback:logback-classic")
     compileOnly("org.graalvm.nativeimage:svm")
-
-    implementation("io.micronaut:micronaut-validation")
-
     runtimeOnly("com.fasterxml.jackson.module:jackson-module-kotlin")
-
 }
 
 
@@ -85,7 +83,9 @@ tasks {
         images.add("us-docker.pkg.dev/planetscale-ai/plugin/native:latest")
     }
 }
+
 graalvmNative.toolchainDetection.set(false)
+
 micronaut {
     runtime("netty")
     testRuntime("kotest")
