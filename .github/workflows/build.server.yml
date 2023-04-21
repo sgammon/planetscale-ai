@@ -107,6 +107,8 @@ jobs:
           languages: javascript, java
       - name: "Build: Plugin Server"
         run: ./gradlew build test check sonar koverXmlReport -x nativeCompile -x testNative --scan
+        env:
+          OPEN_AI_APIKEY: "<stubbed>"
       - name: "Analyze: CodeQL"
         uses: github/codeql-action/analyze@v2
         continue-on-error: true
