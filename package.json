@@ -7,7 +7,9 @@
     "build": "npm run build:workers",
     "build:workers": "npm run build --workspaces",
     "test": "npm run test:workers",
-    "test:workers": "npm run build --workspaces"
+    "test:workers": "npm run build --workspaces",
+    "publish:staging": "npm run publish:staging --workspaces",
+    "publish:live": "npm run publish:live --workspaces"
   },
   "workspaces": [
     "workers/*"

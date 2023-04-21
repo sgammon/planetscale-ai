@@ -3,7 +3,7 @@ on: [push, pull_request]
 
 env:
   CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-  CLOUDFLARE_TOKEN: ${{ secrets.CLOUDFLARE_TOKEN }}
+  CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_TOKEN }}
 
 jobs:
   build:
@@ -26,3 +26,9 @@ jobs:
         uses: gradle/gradle-build-action@v2
       - name: Execute Gradle build
         run: ./gradlew buildJs --no-daemon --scan
+      - name: Deploy Workers (Staging)
+        if: github.ref != 'refs/heads/main' && startsWith(github.ref, 'refs/tags/') == false
+        run: ./gradlew publishWorkersStaging --no-daemon --scan
+      - name: Deploy Workers (Live)
+        if: github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/')
+        run: ./gradlew publishWorkersLive --no-daemon --scan

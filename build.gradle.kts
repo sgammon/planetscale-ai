@@ -17,6 +17,7 @@ group = "io.github.sgammon"
 val kotlinVersion: String by properties
 val elideVersion: String by properties
 val graalvmVersion: String by properties
+val workers = listOf("openapi", "wellknown")
 
 repositories {
     maven("https://elide-snapshots.storage-download.googleapis.com/repository/v3/")
@@ -100,10 +101,39 @@ val buildWorkersTask = tasks.register<NpmTask>("buildJs") {
     description = "Build JS targets via Node/NPM"
     args.set(listOf("run", "build"))
     dependsOn(tasks.npmInstall)
-    inputs.dir(project.fileTree("workers").exclude("**/*.spec.ts"))
     inputs.dir("node_modules")
     inputs.files("tsconfig.json")
-    outputs.dir("${project.buildDir}/workers")
+    workers.forEach { workerName ->
+        inputs.dir(project.fileTree("workers/$workerName").exclude("**/*.spec.ts"))
+        outputs.dir("workers/$workerName/build/worker")
+    }
+}
+
+val publishWorkerStagingTask = tasks.register<NpmTask>("publishWorkersStaging") {
+    group = "publish"
+    description = "Publish CloudFlare Workers to staging environments"
+    args.set(listOf("run", "publish:staging"))
+    dependsOn(tasks.npmInstall, buildWorkersTask)
+    inputs.dir(project.fileTree("workers").exclude("**/*.spec.ts"))
+    inputs.dir("node_modules")
+    inputs.dir("package.json")
+    inputs.files("tsconfig.json")
+    workers.forEach { workerName ->
+        inputs.dir("workers/$workerName/build/worker")
+    }
+}
+
+val publishWorkerLiveTask = tasks.register<NpmTask>("publishWorkersLive") {
+    group = "publish"
+    description = "Publish CloudFlare Workers to live environments"
+    args.set(listOf("run", "publish:live"))
+    dependsOn(tasks.npmInstall, buildWorkersTask)
+    inputs.dir("node_modules")
+    inputs.dir("package.json")
+    inputs.files("tsconfig.json")
+    workers.forEach { workerName ->
+        inputs.dir("workers/$workerName/build/worker")
+    }
 }
 
 tasks {
