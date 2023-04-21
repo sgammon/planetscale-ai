@@ -10,6 +10,7 @@ plugin_jib = "3.3.1"
 plugin_node = "3.6.0"
 plugin_versions = "0.46.0"
 plugin_ktlint = "11.3.1"
+plugin_kover = "0.7.0-Alpha"
 
 [plugins]
 micronaut_application = { id = "io.micronaut.application", version.ref = "plugin_micronaut" }
@@ -20,6 +21,7 @@ node = { id = "com.github.node-gradle.node", version.ref = "plugin_node" }
 versions = { id = "com.github.ben-manes.versions", version.ref = "plugin_versions" }
 ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "plugin_ktlint" }
 detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
+kover = { id = "org.jetbrains.kotlinx.kover", version.ref = "plugin_kover" }
 
 [libraries]
 graalvm_sdk = { group = "org.graalvm.sdk", name = "graal-sdk", version.ref = "graalvm" }

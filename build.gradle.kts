@@ -1,5 +1,6 @@
 @file:Suppress(
     "DSL_SCOPE_VIOLATION",
+    "UnstableApiUsage",
 )
 
 import com.github.gradle.node.npm.task.NpmTask
@@ -11,6 +12,7 @@ plugins {
     alias(libs.plugins.jib)
     alias(libs.plugins.node)
     alias(libs.plugins.versions)
+    alias(libs.plugins.kover)
     alias(libs.plugins.ktlint)
     alias(libs.plugins.detekt)
     alias(libs.plugins.micronaut.application)
@@ -87,6 +89,11 @@ application {
     mainClass.set("io.github.sgammon.ApplicationKt")
 }
 
+node {
+    download.set(false)
+    version.set(nodeVersion)
+}
+
 java {
     sourceCompatibility = JavaVersion.VERSION_19
     targetCompatibility = JavaVersion.VERSION_19
@@ -96,9 +103,9 @@ kotlin {
     // Nothing at this time.
 }
 
-node {
-    download.set(false)
-    version.set(nodeVersion)
+kover {
+    disabledForProject = false
+    useKoverTool()
 }
 
 micronaut {
@@ -305,6 +312,12 @@ tasks.create("format") {
         prettierFormat,
         ktlintFormat,
     )
+}
+
+listOf("buildLayers").forEach {
+    tasks.named(it) {
+        doNotTrackState("too big for build cache")
+    }
 }
 
 /**
