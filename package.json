@@ -1,0 +1,19 @@
+{
+  "name": "planetscale-ai",
+  "version": "1.0.0",
+  "description": "PlanetScale plugin for ChatGPT",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build:workers": ""
+  },
+  "workspaces": [
+    "workers/*"
+  ],
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "wrangler": "2.16.0"
+  }
+}

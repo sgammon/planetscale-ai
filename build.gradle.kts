@@ -1,3 +1,5 @@
+import com.github.gradle.node.npm.task.NpmTask
+
 plugins {
     id("org.jetbrains.kotlin.jvm") version "1.8.20"
     id("org.jetbrains.kotlin.kapt") version "1.8.20"
@@ -6,6 +8,7 @@ plugins {
     id("io.micronaut.application") version "3.7.8"
     id("io.micronaut.test-resources") version "3.7.8"
     id("com.google.cloud.tools.jib") version "2.8.0"
+    id("com.github.node-gradle.node") version "3.5.1"
 }
 
 version = "0.1"
@@ -18,6 +21,11 @@ val graalvmVersion: String by properties
 repositories {
     maven("https://elide-snapshots.storage-download.googleapis.com/repository/v3/")
     mavenCentral()
+}
+
+node {
+    download.set(true)
+    version.set("18.11.0")
 }
 
 dependencies {
@@ -87,6 +95,14 @@ micronaut {
     }
 }
 
+val buildWorkersTask = tasks.register<NpmTask>("build:workers") {
+    args.set(listOf("run", "--prod"))
+    dependsOn(tasks.npmInstall)
+    inputs.dir(project.fileTree("workers").exclude("**/*.spec.ts"))
+    inputs.dir("node_modules")
+    inputs.files("tsconfig.json")
+    outputs.dir("${project.buildDir}/workers")
+}
 
 tasks {
   jib {
