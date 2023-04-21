@@ -1,4 +1,7 @@
 import com.github.gradle.node.npm.task.NpmTask
+import io.micronaut.gradle.MicronautRuntime
+import io.micronaut.gradle.MicronautTestRuntime
+import org.jetbrains.kotlin.gradle.dsl.KotlinJvmOptions
 
 plugins {
     id("org.jetbrains.kotlin.jvm") version "1.8.20"
@@ -9,25 +12,24 @@ plugins {
     id("io.micronaut.test-resources") version "3.7.8"
     id("com.google.cloud.tools.jib") version "2.8.0"
     id("com.github.node-gradle.node") version "3.5.1"
+    id("com.github.ben-manes.versions") version "0.46.0"
 }
 
 version = "0.1"
 group = "io.github.sgammon"
 
+val workers = listOf(
+    "openapi",
+    "wellknown",
+)
+
 val kotlinVersion: String by properties
+val kotlinLanguageVersion: String by properties
+val javaLanguageVersion: String by properties
 val elideVersion: String by properties
 val graalvmVersion: String by properties
-val workers = listOf("openapi", "wellknown")
-
-repositories {
-    maven("https://elide-snapshots.storage-download.googleapis.com/repository/v3/")
-    mavenCentral()
-}
-
-node {
-    download.set(true)
-    version.set("18.11.0")
-}
+val jvmImageCoordinates: String by properties
+val nativeImageCoordinates: String by properties
 
 dependencies {
     kapt("io.micronaut.data:micronaut-data-processor")
@@ -57,42 +59,97 @@ dependencies {
     runtimeOnly("com.fasterxml.jackson.module:jackson-module-kotlin")
 }
 
+/**
+ * Runtime/Tooling Configuration
+ */
 
 application {
     mainClass.set("io.github.sgammon.ApplicationKt")
 }
+
 java {
-    sourceCompatibility = JavaVersion.toVersion("17")
+    sourceCompatibility = JavaVersion.VERSION_19
+    targetCompatibility = JavaVersion.VERSION_19
+}
+
+node {
+    download.set(false)
+    version.set("18.11.0")
+}
+
+micronaut {
+    runtime(MicronautRuntime.NETTY)
+    testRuntime(MicronautTestRuntime.KOTEST_4)
+    processing {
+        incremental(true)
+        annotations("io.github.sgammon.*")
+    }
+}
+
+graalvmNative {
+    agent {
+        defaultMode.set("standard")
+        enabled.set(true)
+    }
+}
+
+
+/**
+ * Build: Server
+ */
+
+fun KotlinJvmOptions.kotlincConfig() {
+    languageVersion = kotlinLanguageVersion
+    jvmTarget = javaLanguageVersion
 }
 
 tasks {
     compileKotlin {
         kotlinOptions {
-            jvmTarget = "17"
+            kotlincConfig()
         }
     }
+
     compileTestKotlin {
         kotlinOptions {
-            jvmTarget = "17"
+            kotlincConfig()
         }
     }
+
     dockerBuild {
-        images.add("us-docker.pkg.dev/planetscale-ai/plugin/jvm:latest")
+        images.add(jvmImageCoordinates)
     }
 
     dockerBuildNative {
-        images.add("us-docker.pkg.dev/planetscale-ai/plugin/native:latest")
+        images.add(nativeImageCoordinates)
     }
 }
 
 graalvmNative.toolchainDetection.set(false)
 
-micronaut {
-    runtime("netty")
-    testRuntime("kotest")
-    processing {
-        incremental(true)
-        annotations("io.github.sgammon.*")
+jib {
+    from {
+        image = "us-docker.pkg.dev/elide-fw/tools/jdk19:latest"
+    }
+    to {
+        image = "us-docker.pkg.dev/planetscale-ai/plugin/jvm:latest"
+    }
+}
+
+/**
+ * Build: Workers
+ */
+
+fun NpmTask.projectInputsOutputs(vararg additionalDependencies: Any) {
+    dependsOn(tasks.npmInstall, *additionalDependencies)
+    inputs.dir("node_modules")
+    inputs.files("tsconfig.json", "package.json")
+}
+
+fun NpmTask.workerOutputs() {
+    projectInputsOutputs(buildWorkersTask)
+    workers.forEach { workerName ->
+        inputs.dir("workers/$workerName/build/worker")
     }
 }
 
@@ -100,9 +157,7 @@ val buildWorkersTask = tasks.register<NpmTask>("buildJs") {
     group = "build"
     description = "Build JS targets via Node/NPM"
     args.set(listOf("run", "build"))
-    dependsOn(tasks.npmInstall)
-    inputs.dir("node_modules")
-    inputs.files("tsconfig.json", "package.json")
+    projectInputsOutputs()
     workers.forEach { workerName ->
         inputs.dir(project.fileTree("workers/$workerName").exclude("**/*.spec.ts"))
         outputs.dir("workers/$workerName/build/worker")
@@ -113,45 +168,41 @@ val publishWorkerStagingTask = tasks.register<NpmTask>("publishWorkersStaging") 
     group = "publish"
     description = "Publish CloudFlare Workers to staging environments"
     args.set(listOf("run", "publish:staging"))
-    dependsOn(tasks.npmInstall, buildWorkersTask)
-    inputs.dir(project.fileTree("workers").exclude("**/*.spec.ts"))
-    inputs.dir("node_modules")
-    inputs.files("tsconfig.json", "package.json")
-    workers.forEach { workerName ->
-        inputs.dir("workers/$workerName/build/worker")
-    }
+    workerOutputs()
 }
 
 val publishWorkerLiveTask = tasks.register<NpmTask>("publishWorkersLive") {
     group = "publish"
     description = "Publish CloudFlare Workers to live environments"
     args.set(listOf("run", "publish:live"))
-    dependsOn(tasks.npmInstall, buildWorkersTask)
-    inputs.dir("node_modules")
-    inputs.files("tsconfig.json", "package.json")
-    workers.forEach { workerName ->
-        inputs.dir("workers/$workerName/build/worker")
-    }
+    workerOutputs()
 }
 
-tasks {
-  jib {
-    from {
-      image = "us-docker.pkg.dev/elide-fw/tools/jdk19:latest"
-    }
-    to {
-      image = "us-docker.pkg.dev/planetscale-ai/plugin/jvm:latest"
-    }
-  }
 
-  build {
+tasks.build {
     dependsOn(buildWorkersTask)
-  }
 }
 
-graalvmNative {
-    agent {
-        defaultMode.set("standard")
-        enabled.set(true)
-    }
+
+/**
+ * Publish/Deploy Tasks
+ */
+
+val jibtask = tasks.named("jib")
+
+tasks.create("publishStaging") {
+    group = "publish"
+    description = "Publish or deploy all live targets"
+    dependsOn(
+        publishWorkerStagingTask,
+    )
+}
+
+tasks.create("publish") {
+    group = "publish"
+    description = "Publish or deploy all live targets"
+    dependsOn(
+        publishWorkerLiveTask,
+        jibtask,
+    )
 }

@@ -51,7 +51,22 @@ If you want to play with a native image, try:
 
 ### What can I do with Gradle?
 
-Run `./gradlew tasks` to find out:
+Everything. To get started, you can use:
+
+**Build all targets:
+```
+./gradlew build
+```
+
+**Test all targets:**
+```
+./gradlew test
+```
+
+If you're wanting to _deploy_, you will need to file an issue get access or replace the variables in the CI config with
+your own Google Cloud and CloudFlare credentials.
+
+Run `./gradlew tasks` to print a full list of tasks with explanations:
 
 <details>
   <summary>Output example</summary>

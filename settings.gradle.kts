@@ -18,13 +18,24 @@ gradleEnterprise {
     }
 }
 
+val elideVersion: String by settings
+val micronautVersion: String by settings
+
 dependencyResolutionManagement {
     repositoriesMode.set(
-        RepositoriesMode.PREFER_PROJECT
+        RepositoriesMode.PREFER_SETTINGS
     )
     repositories {
         maven("https://maven.pkg.st/")
         maven("https://elide.pkg.st/")
+    }
+    versionCatalogs {
+        create("mn") {
+            from("io.micronaut:micronaut-bom:$micronautVersion")
+        }
+        create("framework") {
+            from("dev.elide:bom:$elideVersion")
+        }
     }
 }
 

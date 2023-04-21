@@ -1,0 +1,17 @@
+[versions]
+kotlin = "1.8.20"
+plugin_shadow = "7.1.2"
+plugin_micronaut = "3.7.8"
+plugin_jib = "2.8.0"
+plugin_node = "3.5.1"
+plugin_versions = "0.46.0"
+
+[plugins]
+shadow = { id = "com.github.johnrengelman.shadow", version.ref = "plugin_shadow" }
+micronaut_application = { id = "io.micronaut.application", version.ref = "plugin_micronaut" }
+jib = { id = "com.google.cloud.tools.jib", version.ref = "plugin_jib" }
+node = { id = "com.moowork.node", version.ref = "plugin_node" }
+versions = { id = "com.github.ben-manes.versions", version.ref = "plugin_versions" }
+
+[libraries]
+[bundles]
