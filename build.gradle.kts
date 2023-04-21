@@ -167,7 +167,7 @@ sonar {
     properties {
         property(
             "sonar.coverage.jacoco.xmlReportPaths",
-            listOf("$buildDir/reports/kover/xml/report.xml")
+            listOf("$buildDir/reports/kover/xml/report.xml"),
         )
     }
 }
