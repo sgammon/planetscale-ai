@@ -17,11 +17,6 @@ jobs:
       actions: read
       contents: read
       security-events: write
-    strategy:
-      fail-fast: false
-      matrix:
-        language: ["javascript", "java"]
-
     steps:
       - name: "Setup: Checkout"
         uses: actions/checkout@v3
@@ -29,5 +24,8 @@ jobs:
         uses: github/codeql-action/init@v2
         with:
           config-file: ./.github/codeql/codeql-config.yml
+          languages: javascript, java
+      - name: "Build: CodeQL Autobuild"
+        uses: github/codeql-action/autobuild@v2
       - name: "Analyze: CodeQL"
         uses: github/codeql-action/analyze@v2

@@ -7,9 +7,10 @@ queries:
 
 packs:
   - codeql/java-queries
+  - codeql/java-queries
 
 paths:
-  - packages
+  - src
 
 paths-ignore:
   - node_modules
