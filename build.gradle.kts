@@ -55,7 +55,8 @@ dependencies {
     kapt(mn.micronaut.serde.processor)
 
     // Elide
-    implementation(framework.elide.server)
+    implementation(framework.elide.core)
+    implementation(framework.elide.base)
 
     // Open AI API
     implementation(libs.bundles.openai)

@@ -24,11 +24,11 @@
 
 package io.github.sgammon
 
-import elide.server.Application
+import io.micronaut.runtime.Micronaut.run
 
-/** Application entrypoint; loads the app via an Elide [Application] definition. */
-object Application : Application {
+/** Application entrypoint. */
+object Application {
     @JvmStatic fun main(args: Array<String>) {
-        boot(args)
+        run(*args)
     }
 }
