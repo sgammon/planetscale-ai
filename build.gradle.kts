@@ -102,9 +102,15 @@ node {
 }
 
 micronaut {
-    version(micronautVersion)
-    runtime(MicronautRuntime.NETTY)
-    testRuntime(MicronautTestRuntime.KOTEST_4)
+    version(
+        micronautVersion,
+    )
+    runtime(
+        MicronautRuntime.NETTY,
+    )
+    testRuntime(
+        MicronautTestRuntime.JUNIT_5,
+    )
     processing {
         incremental(true)
         annotations("io.github.sgammon.*")

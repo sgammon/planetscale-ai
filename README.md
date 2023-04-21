@@ -214,3 +214,30 @@ yarnSetup - Setup a specific version of Yarn to be used by the build.
 ```
 
 </details>
+
+### Running the local server
+
+Define the following environment variables:
+
+```bash
+# define your Open AI API key
+export OPEN_AI_APIKEY="...";
+
+# optional, add these if you are using your own Planetscale DB
+export DATASOURCE_DEFAULT_URL="...";
+export DATASOURCE_DEFAULT_USER="...";
+export DATASOURCE_DEFAULT_PASSWORD="pscale_pw...";
+```
+
+After defining your variables, you can run the local server with:
+
+```
+./gradlew run
+```
+
+Then, you can hit the endpoints defined at `/planetscaleAi`.
+
+#### Swagger UI
+
+Navigate to [`https://localhost:8080/swagger-ui/`](http://localhost:8080/swagger-ui/) to use the generated API docs and
+console.
