@@ -5,10 +5,6 @@ languages: java, javascript
 queries:
   - uses: security-and-quality
 
-packs:
-  - codeql/java-queries
-  - codeql/java-queries
-
 paths:
   - src
 
