@@ -40,6 +40,7 @@ jobs:
           version: '>= 363.0.0'
       - name: Docker Login
         run: |
+          gcloud config set project planetscale-ai
           gcloud auth configure-docker us-docker.pkg.dev
       - name: Setup Gradle
         uses: gradle/gradle-build-action@v2
