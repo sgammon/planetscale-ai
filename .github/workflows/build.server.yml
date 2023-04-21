@@ -1,4 +1,4 @@
-name: "CI: Server"
+name: "Build / Server"
 on:
   workflow_dispatch: {}
   pull_request: {}

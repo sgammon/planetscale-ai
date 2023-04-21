@@ -1,5 +1,13 @@
-name: "CI: Workers"
-on: [push, pull_request]
+name: "Build / Workers"
+
+on:
+  workflow_dispatch: {}
+  pull_request: {}
+  push:
+    branches:
+      - main
+    tags:
+      - v*
 
 env:
   CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}

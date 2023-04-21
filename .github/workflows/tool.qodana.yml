@@ -1,4 +1,4 @@
-name: "CI: Qodana"
+name: "Tools / Qodana"
 on:
   workflow_dispatch:
   pull_request:
