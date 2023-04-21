@@ -16,6 +16,7 @@ plugins {
     alias(libs.plugins.ktlint)
     alias(libs.plugins.detekt)
     alias(libs.plugins.sonar)
+    alias(libs.plugins.testlogger)
     alias(libs.plugins.micronaut.application)
     alias(libs.plugins.micronaut.aot)
     alias(libs.plugins.micronaut.testResources)
@@ -108,6 +109,17 @@ kotlin {
 kover {
     disabledForProject = false
     useKoverTool()
+}
+
+testlogger {
+    theme = com.adarshr.gradle.testlogger.theme.ThemeType.MOCHA_PARALLEL
+    showExceptions = System.getenv("TEST_EXCEPTIONS") == "true"
+    showFailed = true
+    showPassed = true
+    showSkipped = true
+    showFailedStandardStreams = true
+    showFullStackTraces = true
+    slowThreshold = 30000L
 }
 
 micronaut {
