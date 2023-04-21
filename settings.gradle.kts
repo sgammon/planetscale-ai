@@ -1,5 +1,45 @@
+@file:Suppress("UnstableApiUsage")
 
-rootProject.name="planetscale-ai"
+pluginManagement {
+    repositories {
+        maven("https://gradle.pkg.st/")
+        gradlePluginPortal()
+    }
+}
+
+plugins {
+    id("com.gradle.enterprise") version("3.11.3")
+}
+
+gradleEnterprise {
+    buildScan {
+        termsOfServiceUrl = "https://gradle.com/terms-of-service"
+        termsOfServiceAgree = "yes"
+    }
+}
+
+val elideVersion: String by settings
+val micronautVersion: String by settings
+
+dependencyResolutionManagement {
+    repositoriesMode.set(
+        RepositoriesMode.PREFER_SETTINGS,
+    )
+    repositories {
+        maven("https://maven.pkg.st/")
+        maven("https://elide.pkg.st/")
+    }
+    versionCatalogs {
+        create("mn") {
+            from("io.micronaut:micronaut-bom:$micronautVersion")
+        }
+        create("framework") {
+            from("dev.elide:bom:$elideVersion")
+        }
+    }
+}
+
+rootProject.name = "planetscale-ai"
 
 val enableLocalCache = (System.getenv("GRADLE_CACHE_LOCAL")?.toBoolean() ?: true)
 val enableRemoteCache = (System.getenv("GRADLE_CACHE_REMOTE")?.toBoolean() ?: true)

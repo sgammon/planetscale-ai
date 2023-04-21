@@ -15,7 +15,6 @@ datasources:
     db-type: mysql
     schema-generate: CREATE_DROP
     dialect: MYSQL
-    url: "jdbc:mysql://aws.connect.psdb.cloud/employees?sslMode=VERIFY_IDENTITY"
 netty:
   default:
     allocator:

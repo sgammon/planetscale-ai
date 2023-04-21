@@ -3,4 +3,31 @@ defaultPackage: io.github.sgammon
 testFramework: kotest
 sourceLanguage: kotlin
 buildTool: gradle_kotlin
-features: [annotation-api, app-name, data, data-jdbc, github-workflow-google-cloud-run-graalvm, graalvm, gradle, http-client, jackson-databind, jdbc-hikari, kotest, kotlin, kotlin-application, kotlin-build, logback, micronaut-build, mysql, netty-server, openapi, readme, serialization-jackson, shade, swagger-ui, test-resources, yaml]
+features:
+  [
+    annotation-api,
+    app-name,
+    data,
+    data-jdbc,
+    github-workflow-google-cloud-run-graalvm,
+    graalvm,
+    gradle,
+    http-client,
+    jackson-databind,
+    jdbc-hikari,
+    kotest,
+    kotlin,
+    kotlin-application,
+    kotlin-build,
+    logback,
+    micronaut-build,
+    mysql,
+    netty-server,
+    openapi,
+    readme,
+    serialization-jackson,
+    shade,
+    swagger-ui,
+    test-resources,
+    yaml,
+  ]

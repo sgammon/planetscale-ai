@@ -1,11 +1,41 @@
+/*
+ * MIT License
+ *
+ * Copyright (c) 2023, Sam Gammon.
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+@file:Suppress(
+    "MnInjectionPoints",
+    "TrailingCommaOnDeclarationSite",
+    "ktlint:trailing-comma-on-declaration-site",
+)
+
 package io.github.sgammon
 
 import com.theokanning.openai.completion.CompletionRequest
 import com.theokanning.openai.service.OpenAiService
 import io.micronaut.http.HttpResponse
+import io.micronaut.http.MediaType
 import io.micronaut.http.annotation.Controller
 import io.micronaut.http.annotation.Get
-import io.micronaut.http.MediaType
 import io.micronaut.http.annotation.QueryValue
 import io.micronaut.serde.annotation.Serdeable
 import io.swagger.v3.oas.annotations.Operation
@@ -27,6 +57,12 @@ open class PlanetscaleAiController {
 
         // AI model to use via OpenAI when translating natural language to queries.
         private const val aiModelToUse = "text-davinci-003"
+
+        // Default temperature value to use with Open AI completions.
+        private const val defaultTemperature = 0.1
+
+        // Default maximum amount of tokens to use during completion (keep in mind the inputs count against this limit).
+        private const val defaultMaxTokens = 3_000
     }
 
     // Logger.
@@ -37,7 +73,7 @@ open class PlanetscaleAiController {
 
     /** API key to use for Open AI calls. */
     private val apiKey = System.getenv("OPENAI_API_KEY")?.ifBlank { null } ?: error(
-        "Failed to resolve API key"
+        "Failed to resolve API key",
     )
 
     /** Service client for talking to Open AI. */
@@ -136,11 +172,13 @@ open class PlanetscaleAiController {
      *
      * @reteurn List of database names (see [ListDatabaseNamesResponse]).
      */
-    @Get(uri="/listOfDatabasesByName", produces=[MediaType.APPLICATION_JSON])
+    @Get(uri = "/listOfDatabasesByName", produces = [MediaType.APPLICATION_JSON])
     open fun planetscaleDatabaseNamesList(): ListDatabaseNamesResponse? {
-        return ListDatabaseNamesResponse(listOf(
-            sampleCompanyDbName,
-        ))
+        return ListDatabaseNamesResponse(
+            listOf(
+                sampleCompanyDbName,
+            ),
+        )
     }
 
     /**
@@ -149,7 +187,7 @@ open class PlanetscaleAiController {
      * @param databaseName Name of the database to list tables in.
      * @return List of table names (see [ListTableNamesResponse]).
      */
-    @Get(uri="/listTablesForDatabaseByName", produces=[MediaType.APPLICATION_JSON])
+    @Get(uri = "/listTablesForDatabaseByName", produces = [MediaType.APPLICATION_JSON])
     open fun planetscaleTableNamesList(
         @QueryValue("databaseName") databaseName: String,
     ): ListTableNamesResponse? {
@@ -177,7 +215,7 @@ open class PlanetscaleAiController {
      * @param tableName Name of the table schema to fetch.
      * @return HTTP response containing JSON which describes the table.
      */
-    @Get(uri="/tableSchemaByName", produces=[MediaType.APPLICATION_JSON])
+    @Get(uri = "/tableSchemaByName", produces = [MediaType.APPLICATION_JSON])
     open fun planetscaleTableSchemaByName(
         @QueryValue("databaseName") databaseName: String,
         @QueryValue("tableName") tableName: String,
@@ -196,23 +234,28 @@ open class PlanetscaleAiController {
         // obtain a connection to the current database, and use it to introspect the schema
         // at the table named `tableName`. use the introspected schema to build an object of
         // type `TableSchemaResponse`.
-        return HttpResponse.ok(connection.createStatement().use { statement ->
-            statement.executeQuery("DESCRIBE $tableName").use { resultSet ->
-                val columns = mutableListOf<ColumnSchema>()
-                while (resultSet.next()) {
-                    val name = resultSet.getString("Field")
-                    val type = ColumnType.fromMySqlType(resultSet.getString("Type"))
-                    columns.add(ColumnSchema(
-                        name,
-                        type,))
+        return HttpResponse.ok(
+            connection.createStatement().use { statement ->
+                statement.executeQuery("DESCRIBE $tableName").use { resultSet ->
+                    val columns = mutableListOf<ColumnSchema>()
+                    while (resultSet.next()) {
+                        val name = resultSet.getString("Field")
+                        val type = ColumnType.fromMySqlType(resultSet.getString("Type"))
+                        columns.add(
+                            ColumnSchema(
+                                name,
+                                type,
+                            ),
+                        )
+                    }
+                    TableSchemaResponse(
+                        tableName,
+                        columns,
+                        primaryKey,
+                    )
                 }
-                TableSchemaResponse(
-                    tableName,
-                    columns,
-                    primaryKey,
-                )
-            }
-        })
+            },
+        )
     }
 
     /**
@@ -225,12 +268,16 @@ open class PlanetscaleAiController {
      * @param naturalLanguage Natural language prompt to translate to SQL.
      * @return Results of the executed SQL query against the database.
      */
-    @Get(uri="/naturalLanguageSQLQuery", produces=[MediaType.APPLICATION_JSON])
+    @Get(uri = "/naturalLanguageSQLQuery", produces = [MediaType.APPLICATION_JSON])
     @Operation(
-        summary = "Accepts a natural language prompt, translates the prompt to an SQL query, and runs the query; returns the results.",
-        description = """
-            Accepts a natural language prompt, translates it to an SQL query, and runs the query against the user's database in read-only form; then, returns the results to the calling user for summarization.
-        """,
+        summary = (
+            "Accepts a natural language prompt, translates the prompt to an SQL query, " +
+                "and runs the query; returns the results."
+            ),
+        description = (
+            "Accepts a natural language prompt, translates it to an SQL query, and runs the query against the " +
+                "user's database in read-only form; then, returns the results to the calling user for summarization."
+            ),
         responses = [
             ApiResponse(
                 responseCode = "200",
@@ -239,10 +286,10 @@ open class PlanetscaleAiController {
                     Content(
                         mediaType = "application/json",
                         schema = Schema(implementation = NaturalLanguageQueryResponse::class),
-                    )
-                ]
-            )
-        ]
+                    ),
+                ],
+            ),
+        ],
     )
     open fun naturalLanguageQuery(
         @QueryValue("databaseName") databaseName: String?,
@@ -253,18 +300,27 @@ open class PlanetscaleAiController {
 
         // if there is more than one database, fail
         when {
-            (databaseName.isNullOrBlank() && databases.isEmpty()) -> return HttpResponse.badRequest(DisambiguationError(
-                neededInput = "databaseName",
-                errorText = "Please specify a database name",
-            ))
+            (databaseName.isNullOrBlank() && databases.isEmpty()) -> return HttpResponse.badRequest(
+                DisambiguationError(
+                    neededInput = "databaseName",
+                    errorText = "Please specify a database name",
+                ),
+            )
 
-            databases.isEmpty() -> return HttpResponse.badRequest(NoDatabasesAvailableError(
-                errorText = "No databases available to query",
-            ))
+            databases.isEmpty() -> return HttpResponse.badRequest(
+                NoDatabasesAvailableError(
+                    errorText = "No databases available to query",
+                ),
+            )
         }
 
         // extract db name
         val dbname = databaseName ?: databases.first()
+
+        // generate a table list, prefixed by `# `
+        val tableList = planetscaleTableNamesList(dbname)
+            ?.tableNames
+            ?.joinToString("\n") { "# - $it" } ?: error("No available tables")
 
         // generate the prompt
         val prompt = """
@@ -282,7 +338,7 @@ open class PlanetscaleAiController {
 # assume that is the table the user is talking about.
 #
 # Tables in the database:
-${planetscaleTableNamesList(dbname)?.tableNames?.joinToString("\n") { "# - $it" } ?: error("No available tables")}
+$tableList
 #
 $naturalLanguage
         """.trimIndent()
@@ -290,13 +346,15 @@ $naturalLanguage
         logging.info("Rendered prompt:\n\n$prompt")
 
         // fire off a request to the API
-        val result = service.createCompletion(CompletionRequest.builder()
-            .model(aiModelToUse)
-            .stop(listOf("#", ";"))
-            .prompt(prompt)
-            .temperature(0.1)
-            .maxTokens(3_000)
-            .build())
+        val result = service.createCompletion(
+            CompletionRequest.builder()
+                .model(aiModelToUse)
+                .stop(listOf("#", ";"))
+                .prompt(prompt)
+                .temperature(defaultTemperature)
+                .maxTokens(defaultMaxTokens)
+                .build(),
+        )
 
         val rawQuery = result.choices.first().text
 
@@ -308,9 +366,11 @@ $naturalLanguage
         val err = statement.execute(query)
         if (!err) {
             logging.error("Failed to execute database query")
-            return HttpResponse.badRequest(FailedToTranslateQueryError(
-                errorText = "Failed to execute database query. Please try again",
-            ))
+            return HttpResponse.badRequest(
+                FailedToTranslateQueryError(
+                    errorText = "Failed to execute database query. Please try again",
+                ),
+            )
         } else {
             // obtain the JDBC resultset, and sniff it to determine the structure of the results; produce a list of
             // columns, and a list of rows.
@@ -332,10 +392,12 @@ $naturalLanguage
                 columnNames.zip(row).toMap()
             }
 
-            return HttpResponse.ok(NaturalLanguageQueryResponse(
-                query = query,
-                results = results,
-            ))
+            return HttpResponse.ok(
+                NaturalLanguageQueryResponse(
+                    query = query,
+                    results = results,
+                ),
+            )
         }
     }
 }

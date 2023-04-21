@@ -1,0 +1,29 @@
+{
+  "name": "planetscale-ai",
+  "version": "1.0.0",
+  "description": "PlanetScale plugin for ChatGPT",
+  "main": "index.js",
+  "scripts": {
+    "lint": "prettier --check .",
+    "format": "prettier --write .",
+    "build": "npm run build:workers",
+    "build:workers": "npm run build --workspaces",
+    "test": "npm run test:workers",
+    "test:workers": "npm run build --workspaces",
+    "publish:staging": "npm run publish:staging --workspaces",
+    "publish:live": "npm run publish:live --workspaces"
+  },
+  "workspaces": [
+    "workers/*"
+  ],
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@commitlint/cli": "^17.6.1",
+    "@commitlint/config-conventional": "^17.6.1",
+    "husky": "^8.0.3",
+    "prettier": "2.8.7",
+    "wrangler": "2.16.0"
+  }
+}

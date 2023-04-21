@@ -1,0 +1,9 @@
+name = "planetscale-ai-openapi"
+main = "index.mjs"
+compatibility_date = "2023-03-14"
+
+workers_dev = false
+route = { pattern = "planetscale.ai/openapi.json", zone_name = "planetscale.ai" }
+
+[env.staging]
+route = { pattern = "staging.planetscale.ai/openapi.json", zone_name = "planetscale.ai" }

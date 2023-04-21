@@ -1,0 +1,21 @@
+{
+  "name": "@planetscale-ai/openapi",
+  "private": true,
+  "type": "module",
+  "version": "1.0.0",
+  "description": "PlanetScale plugin for ChatGPT: Open API spec responder",
+  "module": "index.mjs",
+  "main": "index.mjs",
+  "scripts": {
+    "test": "echo \"No test specified for JS\"",
+    "build": "wrangler publish --env=staging --dry-run=true --outdir=./build/worker index.mjs",
+    "publish:staging": "wrangler publish --env=staging --outdir=./build/worker index.mjs",
+    "publish:live": "wrangler publish --env=production --outdir=./build/worker index.mjs"
+  },
+  "dependencies": {
+    "typescript": "^5.0.4"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20230404.0"
+  }
+}

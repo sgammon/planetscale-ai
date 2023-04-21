@@ -1,0 +1,9 @@
+name = "planetscale-ai-wellknown"
+main = "index.mjs"
+compatibility_date = "2023-03-14"
+
+workers_dev = false
+route = { pattern = "planetscale.ai/.well-known/ai-plugin.json", zone_name = "planetscale.ai" }
+
+[env.staging]
+route = { pattern = "staging.planetscale.ai/.well-known/ai-plugin.json", zone_name = "planetscale.ai" }

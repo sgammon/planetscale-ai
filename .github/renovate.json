@@ -1,0 +1,30 @@
+{
+  "enabled": true,
+  "extends": ["config:base"],
+  "enabledManagers": [
+    "cloudbuild",
+    "github-actions",
+    "npm",
+    "gradle",
+    "gradle-wrapper"
+  ],
+  "baseBranches": ["main"],
+  "compatibility": { "pnpm": "^5.0.0" },
+  "pinDigests": true,
+  "rangeStrategy": "pin",
+  "updateLockFiles": true,
+  "dependencyDashboard": true,
+  "dependencyDashboardApproval": true,
+  "lockFileMaintenance": { "enabled": true },
+  "labels": ["dependencies"],
+  "packageRules": [
+    {
+      "matchPackagePatterns": [".*openai.*"],
+      "groupName": "Open AI Client"
+    },
+    {
+      "matchPackagePatterns": [".*micronaut.*"],
+      "groupName": "Micronaut"
+    }
+  ]
+}

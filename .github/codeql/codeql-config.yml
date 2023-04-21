@@ -1,0 +1,13 @@
+name: "CodeQL"
+
+languages: java, javascript
+
+queries:
+  - uses: security-and-quality
+
+paths:
+  - src
+
+paths-ignore:
+  - node_modules
+  - build

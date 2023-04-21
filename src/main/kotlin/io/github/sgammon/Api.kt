@@ -24,13 +24,20 @@
 
 package io.github.sgammon
 
-import io.micronaut.http.HttpResponse
-import io.micronaut.http.annotation.Controller
-import io.micronaut.http.annotation.Get
-import java.net.URI
+import io.swagger.v3.oas.annotations.OpenAPIDefinition
+import io.swagger.v3.oas.annotations.info.Info
+import io.swagger.v3.oas.annotations.servers.Server
 
-@Controller
-class RootController {
-    @Get("/")
-    fun redirect(): HttpResponse<Any> = HttpResponse.temporaryRedirect(URI.create("https://planetscale.com/"))
-}
+@OpenAPIDefinition(
+    info = Info(
+        title = "Planetscale AI Agent API",
+        version = "1.0",
+    ),
+    servers = [
+        Server(
+            url = "https://planetscale.ai",
+            description = "Server endpoint",
+        ),
+    ],
+)
+object Api

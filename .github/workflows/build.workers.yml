@@ -1,0 +1,46 @@
+name: "Build / Workers"
+
+on:
+  workflow_dispatch: {}
+  pull_request: {}
+  push:
+    branches:
+      - main
+    tags:
+      - v*
+
+env:
+  CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+  CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_TOKEN }}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Setup: Checkout"
+        uses: actions/checkout@v3
+      - name: "Setup: Cache"
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+            ~/.m2/repository
+          key: ${{ runner.os }}-gradle-test-${{ hashFiles('**/*.gradle') }}
+          restore-keys: ${{ runner.os }}-gradle-test-
+      - name: "Setup: GraalVM"
+        uses: graalvm/setup-graalvm@v1
+        with:
+          version: "latest"
+          java-version: "19"
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: "Setup: Gradle"
+        uses: gradle/gradle-build-action@v2
+      - name: "Build: CloudFlare Workers"
+        run: ./gradlew buildJs --no-daemon --scan
+      - name: "Deploy: CloudFlare Workers (Staging)"
+        if: github.ref != 'refs/heads/main' && startsWith(github.ref, 'refs/tags/') == false
+        run: ./gradlew publishWorkersStaging --no-daemon --scan
+      - name: "Deploy: CloudFlare Workers (Live)"
+        if: github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/')
+        run: ./gradlew publishWorkersLive --no-daemon --scan

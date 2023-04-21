@@ -1,111 +1,114 @@
 {
-  "resources":{
-  "includes":[
+  "resources": {
+    "includes": [
+      {
+        "pattern": "\\QMETA-INF/elide/embedded/runtime/js/facade.js\\E"
+      },
+      {
+        "pattern": "\\QMETA-INF/elide/embedded/runtime/js/js.modules.tar.gz\\E"
+      },
+      {
+        "pattern": "\\QMETA-INF/elide/embedded/runtime/js/polyfills.js\\E"
+      },
+      {
+        "pattern": "\\QMETA-INF/elide/embedded/runtime/js/runtime.json\\E"
+      },
+      {
+        "pattern": "\\QMETA-INF/micronaut/io.micronaut.context.ApplicationContextConfigurer\\E"
+      },
+      {
+        "pattern": "\\QMETA-INF/micronaut/io.micronaut.core.beans.BeanIntrospectionReference\\E"
+      },
+      {
+        "pattern": "\\QMETA-INF/micronaut/io.micronaut.inject.BeanConfiguration\\E"
+      },
+      {
+        "pattern": "\\QMETA-INF/micronaut/io.micronaut.inject.BeanDefinitionReference\\E"
+      },
+      {
+        "pattern": "\\QMETA-INF/services/com.fasterxml.jackson.databind.Module\\E"
+      },
+      {
+        "pattern": "\\QMETA-INF/services/com.oracle.truffle.api.TruffleLanguage$Provider\\E"
+      },
+      {
+        "pattern": "\\QMETA-INF/services/com.oracle.truffle.api.instrumentation.TruffleInstrument$Provider\\E"
+      },
+      {
+        "pattern": "\\QMETA-INF/services/io.micronaut.context.env.PropertyExpressionResolver\\E"
+      },
+      {
+        "pattern": "\\QMETA-INF/services/io.micronaut.context.env.PropertySourceLoader\\E"
+      },
+      {
+        "pattern": "\\QMETA-INF/services/io.micronaut.core.convert.TypeConverterRegistrar\\E"
+      },
+      {
+        "pattern": "\\QMETA-INF/services/io.micronaut.core.type.TypeInformationProvider\\E"
+      },
+      {
+        "pattern": "\\QMETA-INF/services/io.micronaut.http.HttpRequestFactory\\E"
+      },
+      {
+        "pattern": "\\QMETA-INF/services/io.micronaut.http.HttpResponseFactory\\E"
+      },
+      {
+        "pattern": "\\QMETA-INF/services/io.micronaut.http.client.HttpClientFactory\\E"
+      },
+      {
+        "pattern": "\\QMETA-INF/services/io.micronaut.http.server.netty.handler.accesslog.element.LogElementBuilder\\E"
+      },
+      {
+        "pattern": "\\QMETA-INF/services/io.micronaut.inject.BeanDefinitionReference\\E"
+      },
+      {
+        "pattern": "\\QMETA-INF/services/java.nio.file.spi.FileSystemProvider\\E"
+      },
+      {
+        "pattern": "\\QMETA-INF/services/java.sql.Driver\\E"
+      },
+      {
+        "pattern": "\\QMETA-INF/services/kotlin.reflect.jvm.internal.impl.builtins.BuiltInsLoader\\E"
+      },
+      {
+        "pattern": "\\QMETA-INF/services/kotlin.reflect.jvm.internal.impl.resolve.ExternalOverridabilityCondition\\E"
+      },
+      {
+        "pattern": "\\Q\\E"
+      },
+      {
+        "pattern": "\\Qapplication.yml\\E"
+      },
+      {
+        "pattern": "\\Qbootstrap.properties\\E"
+      },
+      {
+        "pattern": "\\Qcom/mysql/cj/TlsSettings.properties\\E"
+      },
+      {
+        "pattern": "\\Qcom/oracle/truffle/heap/HeapLanguage.class\\E"
+      },
+      {
+        "pattern": "\\Qcom/oracle/truffle/llvm/nfi/SulongNFI.class\\E"
+      },
+      {
+        "pattern": "\\Qcom/oracle/truffle/nfi/backend/libffi/LibFFILanguage.class\\E"
+      },
+      {
+        "pattern": "\\Qlogback.xml\\E"
+      },
+      {
+        "pattern": "\\Qmicronaut-version.properties\\E"
+      },
+      {
+        "pattern": "\\Qorg/slf4j/impl/StaticLoggerBinder.class\\E"
+      }
+    ]
+  },
+  "bundles": [
     {
-      "pattern":"\\QMETA-INF/elide/embedded/runtime/js/facade.js\\E"
-    }, 
-    {
-      "pattern":"\\QMETA-INF/elide/embedded/runtime/js/js.modules.tar.gz\\E"
-    }, 
-    {
-      "pattern":"\\QMETA-INF/elide/embedded/runtime/js/polyfills.js\\E"
-    }, 
-    {
-      "pattern":"\\QMETA-INF/elide/embedded/runtime/js/runtime.json\\E"
-    }, 
-    {
-      "pattern":"\\QMETA-INF/micronaut/io.micronaut.context.ApplicationContextConfigurer\\E"
-    }, 
-    {
-      "pattern":"\\QMETA-INF/micronaut/io.micronaut.core.beans.BeanIntrospectionReference\\E"
-    }, 
-    {
-      "pattern":"\\QMETA-INF/micronaut/io.micronaut.inject.BeanConfiguration\\E"
-    }, 
-    {
-      "pattern":"\\QMETA-INF/micronaut/io.micronaut.inject.BeanDefinitionReference\\E"
-    }, 
-    {
-      "pattern":"\\QMETA-INF/services/com.fasterxml.jackson.databind.Module\\E"
-    }, 
-    {
-      "pattern":"\\QMETA-INF/services/com.oracle.truffle.api.TruffleLanguage$Provider\\E"
-    }, 
-    {
-      "pattern":"\\QMETA-INF/services/com.oracle.truffle.api.instrumentation.TruffleInstrument$Provider\\E"
-    }, 
-    {
-      "pattern":"\\QMETA-INF/services/io.micronaut.context.env.PropertyExpressionResolver\\E"
-    }, 
-    {
-      "pattern":"\\QMETA-INF/services/io.micronaut.context.env.PropertySourceLoader\\E"
-    }, 
-    {
-      "pattern":"\\QMETA-INF/services/io.micronaut.core.convert.TypeConverterRegistrar\\E"
-    }, 
-    {
-      "pattern":"\\QMETA-INF/services/io.micronaut.core.type.TypeInformationProvider\\E"
-    }, 
-    {
-      "pattern":"\\QMETA-INF/services/io.micronaut.http.HttpRequestFactory\\E"
-    }, 
-    {
-      "pattern":"\\QMETA-INF/services/io.micronaut.http.HttpResponseFactory\\E"
-    }, 
-    {
-      "pattern":"\\QMETA-INF/services/io.micronaut.http.client.HttpClientFactory\\E"
-    }, 
-    {
-      "pattern":"\\QMETA-INF/services/io.micronaut.http.server.netty.handler.accesslog.element.LogElementBuilder\\E"
-    }, 
-    {
-      "pattern":"\\QMETA-INF/services/io.micronaut.inject.BeanDefinitionReference\\E"
-    }, 
-    {
-      "pattern":"\\QMETA-INF/services/java.nio.file.spi.FileSystemProvider\\E"
-    }, 
-    {
-      "pattern":"\\QMETA-INF/services/java.sql.Driver\\E"
-    }, 
-    {
-      "pattern":"\\QMETA-INF/services/kotlin.reflect.jvm.internal.impl.builtins.BuiltInsLoader\\E"
-    }, 
-    {
-      "pattern":"\\QMETA-INF/services/kotlin.reflect.jvm.internal.impl.resolve.ExternalOverridabilityCondition\\E"
-    }, 
-    {
-      "pattern":"\\Q\\E"
-    }, 
-    {
-      "pattern":"\\Qapplication.yml\\E"
-    }, 
-    {
-      "pattern":"\\Qbootstrap.properties\\E"
-    }, 
-    {
-      "pattern":"\\Qcom/mysql/cj/TlsSettings.properties\\E"
-    }, 
-    {
-      "pattern":"\\Qcom/oracle/truffle/heap/HeapLanguage.class\\E"
-    }, 
-    {
-      "pattern":"\\Qcom/oracle/truffle/llvm/nfi/SulongNFI.class\\E"
-    }, 
-    {
-      "pattern":"\\Qcom/oracle/truffle/nfi/backend/libffi/LibFFILanguage.class\\E"
-    }, 
-    {
-      "pattern":"\\Qlogback.xml\\E"
-    }, 
-    {
-      "pattern":"\\Qmicronaut-version.properties\\E"
-    }, 
-    {
-      "pattern":"\\Qorg/slf4j/impl/StaticLoggerBinder.class\\E"
+      "name": "com.mysql.cj.LocalizedErrorMessages",
+      "locales": ["und"]
     }
-  ]},
-  "bundles":[{
-      "name":"com.mysql.cj.LocalizedErrorMessages",
-      "locales":["und"]
-    }]
+  ]
 }
