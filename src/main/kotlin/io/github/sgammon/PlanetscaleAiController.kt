@@ -3,9 +3,9 @@ package io.github.sgammon
 import com.theokanning.openai.completion.CompletionRequest
 import com.theokanning.openai.service.OpenAiService
 import io.micronaut.http.HttpResponse
+import io.micronaut.http.MediaType
 import io.micronaut.http.annotation.Controller
 import io.micronaut.http.annotation.Get
-import io.micronaut.http.MediaType
 import io.micronaut.http.annotation.QueryValue
 import io.micronaut.serde.annotation.Serdeable
 import io.swagger.v3.oas.annotations.Operation
@@ -45,20 +45,20 @@ open class PlanetscaleAiController {
 
     /** List of database names. */
     @Serdeable data class ListDatabaseNamesResponse(
-        val databaseNames: List<String>,
+        val databaseNames: List<String>
     )
 
     /** List of table names. */
     @Serdeable data class ListTableNamesResponse(
         val databaseName: String,
-        val tableNames: List<String>,
+        val tableNames: List<String>
     )
 
     /** Response to a natural language SQL query. */
     @Serdeable data class NaturalLanguageQueryResponse(
         val query: String,
         val results: List<Map<String, Any>>,
-        val columns: List<String>? = null,
+        val columns: List<String>? = null
     )
 
     /** Enumeration which lists each type that a column can inhabit in MySQL. */
@@ -105,30 +105,30 @@ open class PlanetscaleAiController {
     /** Describes the structure/schema of a single table column. */
     @Serdeable data class ColumnSchema(
         val name: String,
-        val type: ColumnType,
+        val type: ColumnType
     )
 
     /** Structure which describes a table schema. */
     @Serdeable data class TableSchemaResponse(
         val name: String,
         val columns: List<ColumnSchema>,
-        val primaryKey: String? = null,
+        val primaryKey: String? = null
     )
 
     /** Response indicating a query translation error occurred. */
     @Serdeable data class FailedToTranslateQueryError(
-        val errorText: String,
+        val errorText: String
     )
 
     /** Error indicating that we don't know what DB/table to query. */
     @Serdeable data class DisambiguationError(
         val neededInput: String,
-        val errorText: String,
+        val errorText: String
     )
 
     /** Error thrown when no databases are available at all. */
     @Serdeable data class NoDatabasesAvailableError(
-        val errorText: String,
+        val errorText: String
     )
 
     /**
@@ -136,11 +136,13 @@ open class PlanetscaleAiController {
      *
      * @reteurn List of database names (see [ListDatabaseNamesResponse]).
      */
-    @Get(uri="/listOfDatabasesByName", produces=[MediaType.APPLICATION_JSON])
+    @Get(uri = "/listOfDatabasesByName", produces = [MediaType.APPLICATION_JSON])
     open fun planetscaleDatabaseNamesList(): ListDatabaseNamesResponse? {
-        return ListDatabaseNamesResponse(listOf(
-            sampleCompanyDbName,
-        ))
+        return ListDatabaseNamesResponse(
+            listOf(
+                sampleCompanyDbName
+            )
+        )
     }
 
     /**
@@ -149,9 +151,9 @@ open class PlanetscaleAiController {
      * @param databaseName Name of the database to list tables in.
      * @return List of table names (see [ListTableNamesResponse]).
      */
-    @Get(uri="/listTablesForDatabaseByName", produces=[MediaType.APPLICATION_JSON])
+    @Get(uri = "/listTablesForDatabaseByName", produces = [MediaType.APPLICATION_JSON])
     open fun planetscaleTableNamesList(
-        @QueryValue("databaseName") databaseName: String,
+        @QueryValue("databaseName") databaseName: String
     ): ListTableNamesResponse? {
         // fetch all table names for the provided database name, and prepare them in a list of strings.
         val tableNames = connection.createStatement().use { statement ->
@@ -166,7 +168,7 @@ open class PlanetscaleAiController {
 
         return ListTableNamesResponse(
             databaseName = databaseName,
-            tableNames = tableNames,
+            tableNames = tableNames
         )
     }
 
@@ -177,10 +179,10 @@ open class PlanetscaleAiController {
      * @param tableName Name of the table schema to fetch.
      * @return HTTP response containing JSON which describes the table.
      */
-    @Get(uri="/tableSchemaByName", produces=[MediaType.APPLICATION_JSON])
+    @Get(uri = "/tableSchemaByName", produces = [MediaType.APPLICATION_JSON])
     open fun planetscaleTableSchemaByName(
         @QueryValue("databaseName") databaseName: String,
-        @QueryValue("tableName") tableName: String,
+        @QueryValue("tableName") tableName: String
     ): HttpResponse<TableSchemaResponse> {
         // fetch the primary key for the table
         val primaryKey = connection.createStatement().use { statement ->
@@ -196,23 +198,28 @@ open class PlanetscaleAiController {
         // obtain a connection to the current database, and use it to introspect the schema
         // at the table named `tableName`. use the introspected schema to build an object of
         // type `TableSchemaResponse`.
-        return HttpResponse.ok(connection.createStatement().use { statement ->
-            statement.executeQuery("DESCRIBE $tableName").use { resultSet ->
-                val columns = mutableListOf<ColumnSchema>()
-                while (resultSet.next()) {
-                    val name = resultSet.getString("Field")
-                    val type = ColumnType.fromMySqlType(resultSet.getString("Type"))
-                    columns.add(ColumnSchema(
-                        name,
-                        type,))
+        return HttpResponse.ok(
+            connection.createStatement().use { statement ->
+                statement.executeQuery("DESCRIBE $tableName").use { resultSet ->
+                    val columns = mutableListOf<ColumnSchema>()
+                    while (resultSet.next()) {
+                        val name = resultSet.getString("Field")
+                        val type = ColumnType.fromMySqlType(resultSet.getString("Type"))
+                        columns.add(
+                            ColumnSchema(
+                                name,
+                                type
+                            )
+                        )
+                    }
+                    TableSchemaResponse(
+                        tableName,
+                        columns,
+                        primaryKey
+                    )
                 }
-                TableSchemaResponse(
-                    tableName,
-                    columns,
-                    primaryKey,
-                )
             }
-        })
+        )
     }
 
     /**
@@ -225,7 +232,7 @@ open class PlanetscaleAiController {
      * @param naturalLanguage Natural language prompt to translate to SQL.
      * @return Results of the executed SQL query against the database.
      */
-    @Get(uri="/naturalLanguageSQLQuery", produces=[MediaType.APPLICATION_JSON])
+    @Get(uri = "/naturalLanguageSQLQuery", produces = [MediaType.APPLICATION_JSON])
     @Operation(
         summary = "Accepts a natural language prompt, translates the prompt to an SQL query, and runs the query; returns the results.",
         description = """
@@ -238,7 +245,7 @@ open class PlanetscaleAiController {
                 content = [
                     Content(
                         mediaType = "application/json",
-                        schema = Schema(implementation = NaturalLanguageQueryResponse::class),
+                        schema = Schema(implementation = NaturalLanguageQueryResponse::class)
                     )
                 ]
             )
@@ -246,21 +253,25 @@ open class PlanetscaleAiController {
     )
     open fun naturalLanguageQuery(
         @QueryValue("databaseName") databaseName: String?,
-        @QueryValue("naturalLanguage") naturalLanguage: String,
+        @QueryValue("naturalLanguage") naturalLanguage: String
     ): HttpResponse<*> {
         val databases = planetscaleDatabaseNamesList()?.databaseNames
             ?: error("Failed to resolve database names")
 
         // if there is more than one database, fail
         when {
-            (databaseName.isNullOrBlank() && databases.isEmpty()) -> return HttpResponse.badRequest(DisambiguationError(
-                neededInput = "databaseName",
-                errorText = "Please specify a database name",
-            ))
+            (databaseName.isNullOrBlank() && databases.isEmpty()) -> return HttpResponse.badRequest(
+                DisambiguationError(
+                    neededInput = "databaseName",
+                    errorText = "Please specify a database name"
+                )
+            )
 
-            databases.isEmpty() -> return HttpResponse.badRequest(NoDatabasesAvailableError(
-                errorText = "No databases available to query",
-            ))
+            databases.isEmpty() -> return HttpResponse.badRequest(
+                NoDatabasesAvailableError(
+                    errorText = "No databases available to query"
+                )
+            )
         }
 
         // extract db name
@@ -290,13 +301,15 @@ $naturalLanguage
         logging.info("Rendered prompt:\n\n$prompt")
 
         // fire off a request to the API
-        val result = service.createCompletion(CompletionRequest.builder()
-            .model(aiModelToUse)
-            .stop(listOf("#", ";"))
-            .prompt(prompt)
-            .temperature(0.1)
-            .maxTokens(3_000)
-            .build())
+        val result = service.createCompletion(
+            CompletionRequest.builder()
+                .model(aiModelToUse)
+                .stop(listOf("#", ";"))
+                .prompt(prompt)
+                .temperature(0.1)
+                .maxTokens(3_000)
+                .build()
+        )
 
         val rawQuery = result.choices.first().text
 
@@ -308,9 +321,11 @@ $naturalLanguage
         val err = statement.execute(query)
         if (!err) {
             logging.error("Failed to execute database query")
-            return HttpResponse.badRequest(FailedToTranslateQueryError(
-                errorText = "Failed to execute database query. Please try again",
-            ))
+            return HttpResponse.badRequest(
+                FailedToTranslateQueryError(
+                    errorText = "Failed to execute database query. Please try again"
+                )
+            )
         } else {
             // obtain the JDBC resultset, and sniff it to determine the structure of the results; produce a list of
             // columns, and a list of rows.
@@ -332,10 +347,12 @@ $naturalLanguage
                 columnNames.zip(row).toMap()
             }
 
-            return HttpResponse.ok(NaturalLanguageQueryResponse(
-                query = query,
-                results = results,
-            ))
+            return HttpResponse.ok(
+                NaturalLanguageQueryResponse(
+                    query = query,
+                    results = results
+                )
+            )
         }
     }
 }

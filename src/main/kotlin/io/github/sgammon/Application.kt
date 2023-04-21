@@ -7,19 +7,17 @@ import io.swagger.v3.oas.annotations.servers.Server
 
 @OpenAPIDefinition(
     info = Info(
-            title = "Planetscale AI Agent API",
-            version = "1.0"
+        title = "Planetscale AI Agent API",
+        version = "1.0"
     ),
     servers = [
         Server(
             url = "https://planetscale.ai",
-            description = "Server endpoint",
+            description = "Server endpoint"
         )
-    ],
+    ]
 )
-object Api {
-}
+object Api
 fun main(args: Array<String>) {
-	run(*args)
+    run(*args)
 }
-

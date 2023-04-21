@@ -39,7 +39,6 @@ dependencyResolutionManagement {
     }
 }
 
-
 rootProject.name = "planetscale-ai"
 
 val enableLocalCache = (System.getenv("GRADLE_CACHE_LOCAL")?.toBoolean() ?: true)

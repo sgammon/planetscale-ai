@@ -1,5 +1,5 @@
 @file:Suppress(
-    "DSL_SCOPE_VIOLATION",
+    "DSL_SCOPE_VIOLATION"
 )
 
 import com.github.gradle.node.npm.task.NpmTask
@@ -11,6 +11,7 @@ plugins {
     alias(libs.plugins.jib)
     alias(libs.plugins.node)
     alias(libs.plugins.versions)
+    alias(libs.plugins.ktlint)
     alias(libs.plugins.micronaut.application)
     alias(libs.plugins.micronaut.aot)
     alias(libs.plugins.micronaut.testResources)
@@ -26,7 +27,7 @@ group = "io.github.sgammon"
 
 val workers = listOf(
     "openapi",
-    "wellknown",
+    "wellknown"
 )
 
 val kotlinVersion: String by properties
@@ -90,6 +91,10 @@ java {
     targetCompatibility = JavaVersion.VERSION_19
 }
 
+kotlin {
+    // Nothing at this time.
+}
+
 node {
     download.set(false)
     version.set(nodeVersion)
@@ -110,7 +115,7 @@ micronaut {
         optimizeServiceLoading.set(true)
         convertYamlToJava.set(true)
         precomputeOperations.set(true)
-        cacheEnvironment.set(false)  // env is overidden in prod with secret values
+        cacheEnvironment.set(false) // env is overidden in prod with secret values
         optimizeClassLoading.set(true)
         deduceEnvironment.set(true)
         optimizeNetty.set(true)
@@ -128,6 +133,13 @@ graalvmNative {
     }
 }
 
+/**
+ * Static Analysis Configuration
+ */
+
+ktlint {
+    disabledRules.set(setOf("no-wildcard-imports"))
+}
 
 /**
  * Build: Server
@@ -237,11 +249,9 @@ val publishWorkerLiveTask = tasks.register<NpmTask>("publishWorkersLive") {
     workerOutputs()
 }
 
-
 tasks.build {
     dependsOn(buildWorkersTask)
 }
-
 
 /**
  * Publish/Deploy Tasks
@@ -253,7 +263,7 @@ tasks.create("publishStaging") {
     group = "publish"
     description = "Publish or deploy all live targets"
     dependsOn(
-        publishWorkerStagingTask,
+        publishWorkerStagingTask
     )
 }
 
@@ -262,6 +272,6 @@ tasks.create("publish") {
     description = "Publish or deploy all live targets"
     dependsOn(
         publishWorkerLiveTask,
-        jibtask,
+        jibtask
     )
 }
