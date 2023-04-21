@@ -14,6 +14,7 @@ env:
   GCLOUD_IMAGE_REPOSITORY: ${{ secrets.GCLOUD_IMAGE_REPOSITORY }}
   SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
   CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+  TEST_EXCEPTIONS: true
   TESTCONTAINERS_RYUK_DISABLED: true
   GRADLE_CACHE_LOCAL: true
   GRADLE_CACHE_REMOTE: true
@@ -48,6 +49,11 @@ jobs:
   build:
     name: "Build: Server"
     runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+      id-token: write
     steps:
       - name: "Setup: Checkout"
         uses: actions/checkout@v3
@@ -100,7 +106,7 @@ jobs:
           config-file: ./.github/codeql/codeql-config.yml
           languages: javascript, java
       - name: "Build: Plugin Server"
-        run: ./gradlew build test check sonar koverXmlReport -x nativeCompile -x testNative --no-daemon --scan
+        run: ./gradlew build test check sonar koverXmlReport -x nativeCompile -x testNative --scan
       - name: "Analyze: CodeQL"
         uses: github/codeql-action/analyze@v2
         continue-on-error: true
@@ -118,7 +124,7 @@ jobs:
           fail_ci_if_error: false
           verbose: true
       - name: "Build: Docker Image (JVM)"
-        run: ./gradlew jib --no-daemon --scan
+        run: ./gradlew jib
         if: github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/')
       - name: "Deploy: Cloud Run"
         if: github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/')
