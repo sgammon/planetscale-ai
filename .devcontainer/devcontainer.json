@@ -34,8 +34,8 @@
   "features": {
     "ghcr.io/devcontainers/features/git:1": {},
     "ghcr.io/devcontainers/features/github-cli:1": {},
-    "ghcr.io/devcontainers/features/go:1": {"version":  "1.19"},
-    "ghcr.io/devcontainers/features/sshd:1": {"version": "latest"},
+    "ghcr.io/devcontainers/features/go:1": { "version": "1.19" },
+    "ghcr.io/devcontainers/features/sshd:1": { "version": "latest" },
     "ghcr.io/devcontainers/features/docker-from-docker:1": {}
   },
   "updateContentCommand": "./gradlew build -x check -x test --refresh-dependencies",
