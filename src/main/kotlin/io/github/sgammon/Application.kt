@@ -26,7 +26,6 @@ package io.github.sgammon
 
 import elide.server.Application
 
-
 /** Application entrypoint; loads the app via an Elide [Application] definition. */
 object Application : Application {
     @JvmStatic fun main(args: Array<String>) {

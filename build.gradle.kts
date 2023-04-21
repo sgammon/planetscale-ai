@@ -89,7 +89,7 @@ dependencies {
  */
 
 application {
-    mainClass.set("io.github.sgammon.ApplicationKt")
+    mainClass.set("io.github.sgammon.Application")
 }
 
 node {
@@ -245,6 +245,7 @@ tasks {
     }
 }
 
+graalvmNative.testSupport.set(false)
 graalvmNative.toolchainDetection.set(false)
 
 jib {
@@ -341,7 +342,10 @@ tasks.create("format") {
     )
 }
 
-listOf("buildLayers").forEach {
+listOf(
+    "buildLayers",
+    "optimizedBuildLayers",
+).forEach {
     tasks.named(it) {
         doNotTrackState("too big for build cache")
     }

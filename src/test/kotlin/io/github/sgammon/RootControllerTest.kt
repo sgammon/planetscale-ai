@@ -33,6 +33,7 @@ import org.junit.jupiter.api.Test
 
 @MicronautTest class RootControllerTest {
     @Inject lateinit var controller: RootController
+
     @Inject lateinit var server: EmbeddedServer
 
     @Test fun testRunning(): Unit = assert(server.isRunning) {
