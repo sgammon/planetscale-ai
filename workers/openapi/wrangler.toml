@@ -6,5 +6,4 @@ workers_dev = false
 route = { pattern = "planetscale.ai/openapi.json", zone_name = "planetscale.ai" }
 
 [env.staging]
-name = "planetscale-ai-openapi-staging"
 route = { pattern = "staging.planetscale.ai/openapi.json", zone_name = "planetscale.ai" }

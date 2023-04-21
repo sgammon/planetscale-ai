@@ -6,5 +6,4 @@ workers_dev = false
 route = { pattern = "planetscale.ai/.well-known/ai-plugin.json", zone_name = "planetscale.ai" }
 
 [env.staging]
-name = "planetscale-ai-wellknown-staging"
 route = { pattern = "staging.planetscale.ai/.well-known/ai-plugin.json", zone_name = "planetscale.ai" }
