@@ -81,6 +81,7 @@ dependencies {
 
     // GraalVM
     implementation(libs.graalvm.sdk)
+    implementation(libs.graalvm.truffle.api)
     compileOnly(libs.graalvm.svm)
 }
 

@@ -30,6 +30,7 @@ testlogger = { id = "com.adarshr.test-logger", version.ref = "plugin_testlogger"
 [libraries]
 graalvm_sdk = { group = "org.graalvm.sdk", name = "graal-sdk", version.ref = "graalvm" }
 graalvm_svm = { group = "org.graalvm.nativeimage", name = "svm", version.ref = "graalvm" }
+graalvm_truffle_api = { group = "org.graalvm.truffle", name = "truffle-api", version.ref = "graalvm" }
 openai_api = { group = "com.theokanning.openai-gpt3-java", name = "api", version.ref = "openai" }
 openai_service = { group = "com.theokanning.openai-gpt3-java", name = "service", version.ref = "openai" }
 
