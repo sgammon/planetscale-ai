@@ -29,6 +29,9 @@ import io.micronaut.http.annotation.Controller
 import io.micronaut.http.annotation.Get
 import java.net.URI
 
+/**
+ * Controller which returns a redirect to `planetscale.com`.
+ */
 @Controller
 class RootController {
     @Get("/")

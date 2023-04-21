@@ -48,6 +48,14 @@ import org.slf4j.LoggerFactory
 import java.sql.Connection
 import javax.transaction.Transactional
 
+/**
+ * Controller which provides a simple API for interacting between PlanetScale and ChatGPT (Open AI).
+ *
+ * Complements an Open API specification which explains this API surface to GPT. The Open API spec is generated based on
+ * the object structures present in this controller.
+ *
+ * @author Sam Gammon
+ */
 @Transactional
 @Controller("/planetscaleAi")
 open class PlanetscaleAiController {
