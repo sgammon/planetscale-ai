@@ -95,7 +95,7 @@ jobs:
           config-file: ./.github/codeql/codeql-config.yml
           languages: javascript, java
       - name: "Build: Plugin Server"
-        run: ./gradlew build test check sonarqube  --no-daemon --scan
+        run: ./gradlew build test check sonar  --no-daemon --scan
       - name: "Analyze: CodeQL"
         uses: github/codeql-action/analyze@v2
         continue-on-error: true
