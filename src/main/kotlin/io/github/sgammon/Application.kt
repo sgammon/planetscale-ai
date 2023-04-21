@@ -24,8 +24,12 @@
 
 package io.github.sgammon
 
-import io.micronaut.runtime.Micronaut.run
+import elide.server.Application
 
-fun main(args: Array<String>) {
-    run(*args)
+
+/** Application entrypoint; loads the app via an Elide [Application] definition. */
+object Application : Application {
+    @JvmStatic fun main(args: Array<String>) {
+        boot(args)
+    }
 }
