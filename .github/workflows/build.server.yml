@@ -51,9 +51,9 @@ jobs:
       - name: "Setup: GraalVM"
         uses: graalvm/setup-graalvm@v1
         with:
-          version: 'latest'
-          java-version: '19'
-          components: 'native-image'
+          version: "latest"
+          java-version: "19"
+          components: "native-image"
           github-token: ${{ secrets.GITHUB_TOKEN }}
       - name: "Setup: Native Image"
         run: gu install native-image
