@@ -5,13 +5,13 @@
 [![Kotlin](https://img.shields.io/badge/Kotlin-1.8.20-blue.svg?logo=kotlin)](http://kotlinlang.org)
 
 It's a plugin for OpenAI that allows you to access your PlanetScale database. You can ask it about your DB, or ask
-it for optimization opportunities. Ee are working on making it dispatchable from github as well.
+it for optimization opportunities. We are working on making it dispatchable from GitHub as well.
 
 ### How to use it
 
 Select the PlanetScale plugin in the OpenAI plugins interface, and then write and submit a prompt. It will dispatch this bot,
 which then dispatches OpenAI to generate a query from your natural language input. That query is then submitted to your
-PlanetScale DB, the results are interpreted, and returned to your convo in plain english.
+PlanetScale DB, the results are interpreted, and returned to your convo in plain English.
 
 When prompted for a domain for plugin discovery, enter:
 
