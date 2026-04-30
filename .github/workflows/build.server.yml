@@ -95,7 +95,7 @@ jobs:
           gcloud config set project planetscale-ai
           gcloud auth configure-docker us-docker.pkg.dev
       - name: "Setup: Gradle"
-        uses: gradle/gradle-build-action@v2
+        uses: gradle/gradle-build-action@a8f75513eafdebd8141bd1cd4e30fcd194af8dfa # v2
       - name: "Setup: Environment"
         run: |
           export DOCKER_IMAGE=`echo "${GCLOUD_GCR}/${GCLOUD_PROJECT_ID}/${GCLOUD_IMAGE_REPOSITORY}/planetscale-ai" | sed -e 's#//#/#' -e 's#^/##'`
